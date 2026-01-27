@@ -7,7 +7,11 @@ const nextConfig = {
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   },
   images: {
-    domains: ['picsum.photos', 'replicate.delivery', 'via.placeholder.com'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'picsum.photos' },
+      { protocol: 'https', hostname: 'replicate.delivery' },
+      { protocol: 'https', hostname: 'via.placeholder.com' }
+    ],
   }
 }
 

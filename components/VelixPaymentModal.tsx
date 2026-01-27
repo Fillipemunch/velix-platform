@@ -27,7 +27,9 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
     feature2: 'Advanced Analytics',
     feature3: 'Priority Signal',
     total_label: 'Total',
-    powered_by: 'VELIX 2026'
+    powered_by: 'VELIX 2026',
+    pay_btn: 'Authorize Payment',
+    processing: 'Syncing...'
   };
 
   const pricing = getCheckoutPrice(entityCvr) || { amount: 54, currency: 'eur' };
@@ -38,12 +40,9 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
     setProcessing(true);
 
     try {
+      // In production, this would initialize a Stripe Checkout Session
       console.log(`[Stripe Bridge] Initiating session for ${pricing.amount} ${pricing.currency.toUpperCase()}`);
-      
-      // Simulating redirect delay to the Stripe Gateway
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Em produção, aqui ocorre o redirecionamento para o checkout.stripe.com
       onPaymentSuccess();
       setProcessing(false);
     } catch (error) {
@@ -138,7 +137,7 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
                 {processing ? (
                   <>
                     <Loader2 className="animate-spin" size={24} />
-                    <span className="text-sm">Connecting...</span>
+                    <span className="text-sm">{checkoutText.processing}</span>
                   </>
                 ) : (
                   <>
