@@ -1,0 +1,9 @@
+{
+  "name": "VELIX Protocol",
+  "description": "The premier infrastructure layer for high-speed startups and elite talent, based in Copenhagen.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "author": "VELIX CORE",
+  "version": "1.1.0"
+}

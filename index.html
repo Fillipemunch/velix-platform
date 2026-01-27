@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velix | European Startup Infrastructure</title>
+    
+    <!-- SEO & OpenGraph Meta Tags -->
+    <meta name="description" content="Based in Copenhagen, Velix is the infrastructure layer for high-speed startups and elite talent.">
+    <meta name="keywords" content="startup, funding, talent, Copenhagen, Denmark, innovation, European tech">
+    
+    <!-- Facebook / LinkedIn Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://velix.europe/">
+    <meta property="og:title" content="Velix | European Startup Infrastructure">
+    <meta property="og:description" content="Based in Copenhagen, Velix is the infrastructure layer for high-speed startups and elite talent.">
+    <meta property="og:image" content="https://velix.europe/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://velix.europe/">
+    <meta property="twitter:title" content="Velix | European Startup Infrastructure">
+    <meta property="twitter:description" content="Based in Copenhagen, Velix is the infrastructure layer for high-speed startups and elite talent.">
+    <meta property="twitter:image" content="https://velix.europe/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%231a2e26%22/><path d=%22M30 30L50 70L70 30%22 stroke=%22%23D6825C%22 stroke-width=%2210%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/></svg>">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              velix: {
+                primary: '#1a2e26', // Forest Green
+                accent: '#D6825C',  // Soft Orange
+                bg: '#F9FBF9',      // Light Greenish White
+                surface: '#FFFFFF',
+                text: '#1a2e26',
+                muted: '#64748b'
+              }
+            },
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body {
+            background-color: #F9FBF9;
+            color: #1a2e26;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .velix-navbar {
+            background-color: #1a2e26;
+            border-bottom: 1px solid rgba(214, 130, 92, 0.1);
+        }
+        .velix-glass {
+            backdrop-filter: blur(12px);
+            background-color: rgba(26, 46, 38, 0.95);
+        }
+        .velix-card {
+            background: #FFFFFF;
+            border: 1px solid rgba(26, 46, 38, 0.05);
+            box-shadow: 0 4px 20px -5px rgba(26, 46, 38, 0.05);
+            border-radius: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #D6825C;
+            color: #FFFFFF;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #c4714e;
+            transform: translateY(-1px);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a2e26;
+            border-radius: 10px;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.12.0",
+    "framer-motion": "https://esm.sh/framer-motion@^11.0.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+</body>
+</html>
