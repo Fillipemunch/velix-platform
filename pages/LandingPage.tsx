@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Search, MapPin, ArrowRight, Zap, TrendingUp, Cpu, Globe, Shield } from 'lucide-react';
@@ -13,12 +12,17 @@ const featuredCompanies = [
 ];
 
 const LandingPage: React.FC = () => {
-  const { t, setFilters, language, investors } = useApp();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const appContext = useApp();
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('');
   const [showBanner, setShowBanner] = useState(true);
-  const navigate = useNavigate();
 
+  if (!mounted || !appContext) return null;
+  const { t, setFilters, language, investors } = appContext;
   const featuredInvestors = investors.slice(0, 3);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -104,7 +108,6 @@ const LandingPage: React.FC = () => {
         </motion.form>
       </section>
 
-      {/* Investor Hub Section */}
       <section className="py-32 bg-[#1a2e26] text-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
@@ -134,7 +137,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Value Pillars */}
       <section className="py-32 px-6 max-w-7xl mx-auto grid md:grid-cols-3 gap-20">
         {[
           { icon: <Zap size={32} fill="currentColor" />, title: t.about.pillar1Title, text: t.about.pillar1Text },
