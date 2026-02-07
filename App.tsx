@@ -26,7 +26,6 @@ import Logo from './components/Logo';
 
 const Footer: React.FC = () => {
   const { t } = useApp();
-  const currentYear = Math.max(2026, new Date().getFullYear());
 
   return (
     <footer className="bg-white border-t border-slate-50 py-20 px-6 mt-auto">
@@ -45,7 +44,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="flex items-center space-x-2 text-[10px] font-black text-[#1a2e26]/10 uppercase tracking-[0.5em]">
-          <span>© {currentYear} VELIX Protocol • Based in Copenhagen</span>
+          <span>VELIX Protocol • Based in Copenhagen</span>
         </div>
       </div>
     </footer>
