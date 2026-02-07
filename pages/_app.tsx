@@ -3,9 +3,7 @@ import { AppProvider } from '../context/AppContext';
 import { AuthProvider } from '../context/AuthContext';
 import { HashRouter, MemoryRouter } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
-// Next.js standard style reset or globals can be imported here if needed
-// import '../globals.css';
+import '../styles/globals.css';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [mounted, setMounted] = useState(false);
