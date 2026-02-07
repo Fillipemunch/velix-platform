@@ -1,7 +1,9 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+import { AppProvider } from './context/AppContext';
+import { AuthProvider } from './context/AuthContext';
+import { HashRouter } from 'react-router-dom';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -11,6 +13,12 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <AppProvider>
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </AppProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

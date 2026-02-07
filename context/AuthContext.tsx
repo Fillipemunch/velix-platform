@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
 interface User {
@@ -31,7 +30,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = (email: string) => {
-    // Fillipe is the admin as per request
     const isAdmin = email.toLowerCase() === 'fillipe@velix.dk' || email.toLowerCase().includes('admin');
     const userData: User = { 
       email, 
@@ -73,6 +71,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  if (!context) {
+    return {
+      user: null,
+      login: () => {},
+      logout: () => {},
+      subscribe: () => {},
+      isAuthenticated: false,
+      isSubscribed: false,
+      isAdmin: false
+    };
+  }
   return context;
 };

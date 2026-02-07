@@ -1,13 +1,18 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Filter as FilterIcon, ChevronRight, Coins, MapPin, ArrowLeft, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const JobBoard: React.FC = () => {
-  const { t, filters, setFilters, language, allJobs } = useApp();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const appContext = useApp();
   const navigate = useNavigate();
+
+  if (!mounted || !appContext) return null;
+  const { t, filters, setFilters, language, allJobs } = appContext;
 
   const handleToggleFilter = (category: 'region' | 'type', value: string) => {
     setFilters(prev => {

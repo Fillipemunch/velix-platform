@@ -1,13 +1,18 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShieldCheck, Lock, Eye } from 'lucide-react';
 
 const PrivacyPage: React.FC = () => {
-  const { t } = useApp();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const appContext = useApp();
   const navigate = useNavigate();
+
+  if (!mounted || !appContext) return null;
+  const { t } = appContext;
 
   return (
     <motion.div 

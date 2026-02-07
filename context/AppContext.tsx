@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Language, FilterState, Investor, Job } from '../types';
 import { translations } from '../translations';
@@ -44,6 +43,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window === 'undefined') return 'en';
     const savedLang = localStorage.getItem('velix_lang');
     return (savedLang as Language) || 'en';
   });
@@ -55,16 +55,19 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const [applications, setApplications] = useState<Application[]>(() => {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('velix_applications');
     return saved ? JSON.parse(saved) : [];
   });
 
   const [allJobs, setAllJobs] = useState<Job[]>(() => {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('velix_all_jobs');
     return saved ? JSON.parse(saved) : [];
   });
 
   const [investors, setInvestors] = useState<Investor[]>(() => {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('velix_investors');
     return saved ? JSON.parse(saved) : [];
   });
@@ -162,7 +165,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const userCreatedJobs = allJobs; 
   const totalUserPosts = allJobs.length + investors.length;
 
-  const t = translations[language];
+  const t = translations[language] || translations['en'];
 
   return (
     <AppContext.Provider value={{ 
@@ -192,6 +195,27 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
 export const useApp = () => {
   const context = useContext(AppContext);
-  if (!context) throw new Error('useApp must be used within AppProvider');
+  if (!context) {
+    return {
+      language: 'en',
+      t: translations['en'],
+      setLanguage: () => {},
+      filters: { searchQuery: '', region: [], type: [] },
+      setFilters: () => {},
+      applications: [],
+      addApplication: () => {},
+      markApplicationsAsRead: () => {},
+      updateApplicationStatus: () => {},
+      investors: [],
+      addInvestor: () => {},
+      allJobs: [],
+      userCreatedJobs: [],
+      addUserJob: () => {},
+      totalUserPosts: 0,
+      moderateJob: () => {},
+      moderateInvestor: () => {},
+      getCheckoutPrice: () => ({ amount: 54, currency: 'eur' })
+    } as any;
+  }
   return context;
 };

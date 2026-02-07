@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { HashRouter as Router, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
-import { AppProvider, useApp } from './context/AppContext';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
+import { useApp } from './context/AppContext';
+import { useAuth } from './context/AuthContext';
 import Header from './components/Header';
 import LandingPage from './pages/LandingPage';
 import JobBoard from './pages/JobBoard';
@@ -25,7 +25,9 @@ import { AnimatePresence } from 'framer-motion';
 import Logo from './components/Logo';
 
 const Footer: React.FC = () => {
-  const { t } = useApp();
+  const appContext = useApp();
+  if (!appContext) return null;
+  const { t } = appContext;
 
   return (
     <footer className="bg-white border-t border-slate-50 py-20 px-6 mt-auto">
@@ -116,19 +118,13 @@ const App: React.FC = () => {
   }
 
   return (
-    <AuthProvider>
-      <AppProvider>
-        <Router>
-          <div className="min-h-screen flex flex-col selection:bg-[#D6825C]/20 selection:text-[#D6825C]">
-            <Header />
-            <main className="flex-grow">
-              <AnimatedRoutes />
-            </main>
-            <Footer />
-          </div>
-        </Router>
-      </AppProvider>
-    </AuthProvider>
+    <div className="min-h-screen flex flex-col selection:bg-[#D6825C]/20 selection:text-[#D6825C]">
+      <Header />
+      <main className="flex-grow">
+        <AnimatedRoutes />
+      </main>
+      <Footer />
+    </div>
   );
 };
 
