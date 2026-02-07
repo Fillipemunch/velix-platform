@@ -30,9 +30,9 @@ const ForStartupsPage: React.FC = () => {
             animate={{ y: 0, opacity: 1 }}
             className="text-6xl md:text-8xl font-black text-[#1A2E26] mb-10 tracking-tighter leading-none max-w-5xl mx-auto"
           >
+           >
             {language === 'en' ? 'Scale your team with the best European talent' : 'Skaler dit team med de bedste talenter i Europa'}
           </motion.h1>
-          <motion.p 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
