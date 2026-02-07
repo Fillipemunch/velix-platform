@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { motion } from 'framer-motion';
@@ -39,7 +38,7 @@ const ForStartupsPage: React.FC = () => {
             transition={{ delay: 0.1 }}
             className="text-xl md:text-2xl text-[#1A2E26]/60 mb-16 max-w-3xl mx-auto leading-relaxed font-medium"
           >
-            {language === 'en' ? 'Join 2,000+ European startups using Velix to hire faster and smarter.' : 'Slut dig til 2.000+ europæiske startups, der bruger Velix til at ansætte hurtigere.'}
+            {language === 'en' ? 'Join 2,000+ European startups using VELIX to hire faster and smarter.' : 'Slut dig til 2.000+ europæiske startups, der bruger VELIX til at ansætte hurtigere.'}
           </motion.p>
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
@@ -61,6 +60,9 @@ const ForStartupsPage: React.FC = () => {
               <span>{t.navigation.signup}</span>
             </button>
           </motion.div>
+          <div className="mt-12 text-[10px] font-black uppercase tracking-[0.4em] text-[#1A2E26]/20">
+            VELIX Protocol • Based in Copenhagen
+          </div>
         </section>
 
         <section className="grid md:grid-cols-3 gap-8 mb-32">
