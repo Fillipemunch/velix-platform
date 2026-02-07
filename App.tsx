@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
@@ -11,9 +10,9 @@ import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import DashboardPage from './pages/DashboardPage';
 import ForStartupsPage from './pages/ForStartupsPage';
+import PhilosophyPage from './pages/AboutPage';
 import PricingPage from './pages/PricingPage';
 import SuccessPage from './pages/SuccessPage';
-import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import CookiesPage from './pages/CookiesPage';
@@ -46,7 +45,7 @@ const Footer: React.FC = () => {
         </div>
         
         <div className="flex items-center space-x-2 text-[10px] font-black text-[#1a2e26]/10 uppercase tracking-[0.5em]">
-          <span>© {currentYear} VELIX | Based in Copenhagen</span>
+          <span>© {currentYear} VELIX Protocol • Based in Copenhagen</span>
         </div>
       </div>
     </footer>
@@ -74,7 +73,7 @@ const AnimatedRoutes = () => {
         <Route path="/jobs" element={<JobBoard />} />
         <Route path="/jobs/:id" element={<JobDetails />} />
         <Route path="/for-startups" element={<ForStartupsPage />} />
-        <Route path="/philosophy" element={<AboutPage />} />
+        <Route path="/philosophy" element={<PhilosophyPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/success" element={<SuccessPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
@@ -99,7 +98,6 @@ const AnimatedRoutes = () => {
             <AdminDashboard />
           </AdminRoute>
         } />
-        {/* Custom 404 Handler */}
         <Route path="/404" element={<NotFound />} />
         <Route path="*" element={<Navigate to="/404" replace />} />
       </Routes>

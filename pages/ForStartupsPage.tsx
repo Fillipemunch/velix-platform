@@ -32,7 +32,7 @@ const ForStartupsPage: React.FC = () => {
           >
             {language === 'en' ? 'Scale your team with the best European talent' : 'Skaler dit team med de bedste talenter i Europa'}
           </motion.h1>
-          </motion.h1> 
+          <motion.p 
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.1 }}
