@@ -1,4 +1,3 @@
-
 export const translations = {
   en: {
     navigation: {
@@ -12,6 +11,20 @@ export const translations = {
       joinAsInvestor: "Investor Access",
       settings: "Settings",
       admin: "Protocol Console"
+    },
+    pricing: {
+      title: "Subsidized Infrastructure",
+      subtitle: "VELIX is currently free for all verified startups, focusing on ecosystem density.",
+      price: "FREE",
+      period: "forever",
+      cta: "Activate Console",
+      features: [
+        "Infinite Market Entries",
+        "Full Protocol Database Access",
+        "Priority Candidate Intelligence",
+        "Custom Command Center",
+        "Direct Bridge Protocol (Beta)"
+      ]
     },
     admin: {
       title: "VELIX Protocol Console",
@@ -276,17 +289,6 @@ export const translations = {
       no_talents: "No signals match your filters"
     },
     upgrade_cta: "Activate Console",
-    pricing_title: "Subsidized Infrastructure",
-    pricing_subtitle: "VELIX is currently free for all verified startups, focusing on ecosystem density.",
-    plan_premium: "Subsidized Protocol Access",
-    pricing_features: [
-      "Infinite Market Entries",
-      "Full Protocol Database Access",
-      "Priority Candidate Intelligence",
-      "Custom Command Center",
-      "Direct Bridge Protocol (Beta)"
-    ],
-    subscribe_now: "Initialize Access",
     success_title: "Welcome to the Protocol",
     success_subtitle: "Your entity is now integrated. Velocity mode enabled.",
     success_cta: "Enter Command Center",
@@ -333,7 +335,6 @@ export const translations = {
     }
   },
   da: {
-    // Keep danish similar in structure but updated as well...
     navigation: {
       findJobs: "Muligheder",
       forStartups: "Skaler op",
@@ -345,6 +346,20 @@ export const translations = {
       joinAsInvestor: "Investor Adgang",
       settings: "Indstillinger",
       admin: "Protokol Konsol"
+    },
+    pricing: {
+      title: "Subsidieret Infrastruktur",
+      subtitle: "VELIX er i øjeblikket gratis for alle verificerede startups.",
+      price: "GRATIS",
+      period: "altid",
+      cta: "Aktiver Konsol",
+      features: [
+        "Uendelige Markedsadgange",
+        "Fuld Protokol Database Adgang",
+        "Prioriteret Kandidat Intelligence",
+        "Brugerdefineret Kommandocenter",
+        "Direkte Bro Protokol (Beta)"
+      ]
     },
     admin: {
       title: "VELIX Protokol Konsol",
@@ -412,7 +427,7 @@ export const translations = {
       trial_active: "Gratis Niveau Aktivt"
     },
     checkout: {
-      title: "Bekræft Opslag",
+      title: "Confirm Entry",
       subtitle: "Klar til at sende din mission ud i økosystemet.",
       summary_title: "Protokol Broadcast",
       feature1: "Dybdegående Talent-analyse",
