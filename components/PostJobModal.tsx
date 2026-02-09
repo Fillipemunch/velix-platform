@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Briefcase, MapPin, Coins, Info, CheckCircle2, ShieldCheck, Link as LinkIcon, Sparkles } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import PaywallGate from './PaywallGate';
-import VelixPaymentModal from './VelixPaymentModal';
 
 interface PostJobModalProps {
   isOpen: boolean;
@@ -15,7 +13,6 @@ interface PostJobModalProps {
 const PostJobModal: React.FC<PostJobModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const { t, language } = useApp();
   const [step, setStep] = useState(1);
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -28,13 +25,8 @@ const PostJobModal: React.FC<PostJobModalProps> = ({ isOpen, onClose, onSubmit }
     linkedinUrl: ''
   });
 
-  const handleSyncAttempt = (e: React.FormEvent) => {
+  const handlePostSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsCheckoutOpen(true);
-  };
-
-  const handlePaymentSuccess = () => {
-    setIsCheckoutOpen(false);
     const formattedSalary = `${formData.salaryMin} - ${formData.salaryMax} EUR`;
     
     onSubmit({
@@ -141,7 +133,7 @@ const PostJobModal: React.FC<PostJobModalProps> = ({ isOpen, onClose, onSubmit }
               )}
 
               {step === 2 && (
-                <form onSubmit={handleSyncAttempt} className="space-y-8">
+                <form onSubmit={handlePostSubmit} className="space-y-8">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-[#1a2e26]/40 ml-2">Agreement Node</label>
@@ -178,7 +170,7 @@ const PostJobModal: React.FC<PostJobModalProps> = ({ isOpen, onClose, onSubmit }
                     <button type="button" onClick={() => setStep(1)} className="flex-1 border border-[#1a2e26]/10 text-[#1a2e26] py-5 rounded-xl font-black text-xs uppercase tracking-widest">Back</button>
                     <button type="submit" className="flex-[2] bg-[#D6825C] text-white py-5 rounded-xl font-black text-xs uppercase tracking-widest shadow-xl flex items-center justify-center space-x-2">
                       <Sparkles size={16} />
-                      <span>Proceed to Payment</span>
+                      <span>Post Job Now (Free)</span>
                     </button>
                   </div>
                 </form>
@@ -187,7 +179,7 @@ const PostJobModal: React.FC<PostJobModalProps> = ({ isOpen, onClose, onSubmit }
               {step === 3 && (
                 <div className="text-center py-20 flex flex-col items-center">
                   <div className="w-24 h-24 bg-[#1a2e26]/5 text-[#1a2e26] rounded-2xl flex items-center justify-center mb-8 animate-pulse">
-                    <ShieldCheck size={48} />
+                    <CheckCircle2 size={48} />
                   </div>
                   <h3 className="text-3xl font-black text-[#1a2e26] mb-3 uppercase tracking-tight">Syncing with Protocol</h3>
                   <p className="text-[#1a2e26]/40 font-bold uppercase tracking-widest text-[10px] max-w-sm mx-auto leading-relaxed">
@@ -197,13 +189,6 @@ const PostJobModal: React.FC<PostJobModalProps> = ({ isOpen, onClose, onSubmit }
               )}
             </div>
           </motion.div>
-
-          <VelixPaymentModal 
-            isOpen={isCheckoutOpen} 
-            onClose={() => setIsCheckoutOpen(false)} 
-            onPaymentSuccess={handlePaymentSuccess}
-            entityCvr={formData.cvr}
-          />
         </div>
       )}
     </AnimatePresence>
