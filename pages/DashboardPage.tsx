@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
@@ -221,8 +220,11 @@ const DashboardPage: React.FC = () => {
                       <p className="text-[#1a2e26]/60 font-medium mb-8 leading-relaxed">
                         Need architectural advice on scaling your hiring via the protocol? Chat with our Copenhagen core team.
                       </p>
-                      <button className="w-full py-4 bg-[#1a2e26] text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-600 transition-colors">
-                        Open Support Matrix
+                      <button 
+                        onClick={() => window.location.href = 'mailto:velixcopenhagen@gmail.com'}
+                        className="w-full py-4 bg-[#1a2e26] text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-blue-600 transition-colors"
+                      >
+                        Contact via Email
                       </button>
                    </div>
 

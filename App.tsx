@@ -41,12 +41,12 @@ const Footer: React.FC = () => {
           <Link to="/philosophy" className="hover:text-[#D6825C] transition-colors">Philosophy</Link>
         </div>
 
-        <div className="text-[#1a2e26]/20 text-[10px] font-bold tracking-[0.2em] text-center uppercase">
-          {t.footer_text}
+        <div className="text-[#1a2e26]/40 text-[10px] font-bold tracking-[0.2em] text-center uppercase">
+          Based in Copenhagen, Denmark | <a href="mailto:velixcopenhagen@gmail.com" className="hover:text-[#D6825C] transition-colors">velixcopenhagen@gmail.com</a>
         </div>
         
         <div className="flex items-center space-x-2 text-[10px] font-black text-[#1a2e26]/10 uppercase tracking-[0.5em]">
-          <span>VELIX Protocol • Based in Copenhagen</span>
+          <span>VELIX Protocol • Serving the European Innovation Ecosystem</span>
         </div>
       </div>
     </footer>

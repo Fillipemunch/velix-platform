@@ -214,7 +214,7 @@ export const translations = {
       'Part-time': 'Agile/Part-time',
       'Internship': 'Apprenticeship'
     },
-    footer_text: "Based in Copenhagen, Denmark | Serving the European Innovation Ecosystem.",
+    footer_text: "Based in Copenhagen, Denmark | velixcopenhagen@gmail.com",
     footer_privacy: "Privacy Protocol",
     footer_terms: "Terms of Use",
     footer_cookies: "Cookie Policy",
@@ -300,7 +300,7 @@ export const translations = {
       feature1: "Vetted Candidate Intelligence",
       feature2: "Infinite Market Entry Creation",
       feature3: "Custom Command Center Dashboard",
-      support_note: "Queries? Our support matrix is online 24/7.",
+      support_note: "Queries? Contact us at velixcopenhagen@gmail.com",
       closing: "The Velix Core Team"
     },
     privacy: {
@@ -476,6 +476,9 @@ export const translations = {
       save_btn: "Anvend Opdateringer",
       success_save: "Protokol opdateret korrekt"
     },
-    // Rest of Danish translations updated similarly...
+    footer_text: "Baseret i København, Danmark | velixcopenhagen@gmail.com",
+    email_confirmation: {
+      support_note: "Spørgsmål? Kontakt os på velixcopenhagen@gmail.com",
+    }
   }
 };
