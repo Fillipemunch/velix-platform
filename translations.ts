@@ -78,7 +78,7 @@ export const translations = {
       publish: "Deploy Profile",
       success_title: "Submission Received",
       success_msg: "Your fund profile is currently in the vetting queue. Expect a status update within 24h.",
-      cta_funding: "View Capital Map",
+      cta_funding: "Se Kapitalkort",
       free_trial_badge: "✓ SUBSIDIZED BY VELIX PROTOCOL"
     },
     paywall: {
@@ -295,13 +295,7 @@ export const translations = {
     email_confirmation: {
       subject: "Protocol Integration Confirmed",
       greeting: "Welcome to VELIX.",
-      body: "Your entry is active. The European ecosystem is now at your fingertips.",
-      access_list_title: "Unlocked Protocols:",
-      feature1: "Vetted Candidate Intelligence",
-      feature2: "Infinite Market Entry Creation",
-      feature3: "Custom Command Center Dashboard",
-      support_note: "Queries? Contact us at velixcopenhagen@gmail.com",
-      closing: "The Velix Core Team"
+      body: "Your entry is active. The European ecosystem is now at your fingertips."
     },
     privacy: {
       title: "Privacy Protocol",
@@ -393,7 +387,7 @@ export const translations = {
       cvr_label: "CVR Nummer (Danmark)",
       linkedin_label: "LinkedIn URL for enhed/stifter",
       corporate_email: "Virksomheds e-mailadresse",
-      moderation_note: "Alle indsendelser gennemgås af Velix Protokol-teamet i København inden for 24 timer. Det er i øjeblikket gratis.",
+      moderation_note: "Alle indsendelser gennemgås af Velix Protokol-teamet i København inden for 24 timer. Det é i øjeblikket gratis.",
     },
     investor_preview: {
       title: "Distribuer Kapital",
@@ -478,7 +472,9 @@ export const translations = {
     },
     footer_text: "Baseret i København, Danmark | velixcopenhagen@gmail.com",
     email_confirmation: {
-      support_note: "Spørgsmål? Kontakt os på velixcopenhagen@gmail.com",
+      subject: "Protokolintegration Bekræftet",
+      greeting: "Velkommen til VELIX.",
+      body: "Din profil er aktiv. Det europæiske økosystem er nu lige ved hånden."
     }
   }
 };

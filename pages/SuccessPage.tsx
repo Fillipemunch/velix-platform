@@ -48,7 +48,7 @@ const SuccessPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Mock Email Preview */}
+      {/* Mock Email Preview - Simplified per user request */}
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -74,31 +74,8 @@ const SuccessPage: React.FC = () => {
           
           <div className="space-y-6">
             <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t.email_confirmation.subject}</h3>
-            <p className="text-lg font-bold text-[#1A2E26]">{t.email_confirmation.greeting}</p>
-            <p className="text-gray-600 font-medium leading-relaxed">{t.email_confirmation.body}</p>
-            
-            <div className="bg-[#F4F7F5] p-6 rounded-xl border border-[#2D5A4C]/5">
-              <p className="text-xs font-black uppercase tracking-widest text-[#2D5A4C] mb-4">{t.email_confirmation.access_list_title}</p>
-              <ul className="space-y-3">
-                {[t.email_confirmation.feature1, t.email_confirmation.feature2, t.email_confirmation.feature3].map((f, i) => (
-                  <li key={i} className="flex items-center text-sm font-bold text-[#1A2E26]/80">
-                    <ShieldCheck size={16} className="text-[#2D5A4C] mr-3" />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <p className="text-sm text-gray-400 font-medium italic">
-              {t.email_confirmation.support_note}
-            </p>
-            
-            <div className="pt-8 border-t border-gray-50 flex items-center justify-between">
-              <p className="text-sm font-bold text-[#2D5A4C]">{t.email_confirmation.closing}</p>
-              <div className="flex items-center text-[#D6825C] font-black text-[10px] uppercase tracking-widest">
-                <Mail size={14} className="mr-2" /> 400 {t.common.currency_symbol}
-              </div>
-            </div>
+            <p className="text-2xl font-black text-[#1A2E26]">{t.email_confirmation.greeting}</p>
+            <p className="text-gray-600 font-medium leading-relaxed text-lg">{t.email_confirmation.body}</p>
           </div>
         </div>
       </motion.div>
