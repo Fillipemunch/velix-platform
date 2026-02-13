@@ -1,73 +1,9 @@
-
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
-import { Search, MapPin, Briefcase, Filter, ChevronDown, Check, Star, Lock, Send, Sparkles } from 'lucide-react';
+import { useApp, EcosystemUser } from '../context/AppContext';
+// Added Check to the lucide-react imports
+import { Search, MapPin, Briefcase, Filter, Lock, Send, Sparkles, Star, User, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Job } from '../types';
-
-interface Talent {
-  id: string;
-  name: string;
-  role: string;
-  experience: 'Junior' | 'Mid' | 'Senior';
-  category: 'Tech' | 'Marketing' | 'Design' | 'Sales';
-  location: string;
-  tags: string[];
-  summary: string;
-}
-
-const mockTalents: Talent[] = [
-  { 
-    id: 't1', 
-    name: 'Mads Jensen', 
-    role: 'Senior Frontend Developer', 
-    experience: 'Senior', 
-    category: 'Tech', 
-    location: 'Copenhagen', 
-    tags: ['React', 'Node.js', 'Tailwind', 'Typescript'], 
-    summary: 'Senior developer with 7+ years of experience in high-growth startups like Lunar and Pleo.' 
-  },
-  { 
-    id: 't2', 
-    name: 'Sofie Nielsen', 
-    role: 'UX/UI Designer', 
-    experience: 'Mid', 
-    category: 'Design', 
-    location: 'Aarhus', 
-    tags: ['Figma', 'Strategy', 'Design Systems'], 
-    summary: 'Focused on creating accessible and delightful user experiences for health-tech startups.' 
-  },
-  { 
-    id: 't3', 
-    name: 'Lars Thomsen', 
-    role: 'Growth Marketing Manager', 
-    experience: 'Senior', 
-    category: 'Marketing', 
-    location: 'Remote', 
-    tags: ['SEO', 'Meta Ads', 'Analytics', 'SaaS'], 
-    summary: 'Specialist in scaling SaaS companies from seed to Series B across the Nordic market.' 
-  },
-  { 
-    id: 't4', 
-    name: 'Emma Holm', 
-    role: 'Fullstack Developer', 
-    experience: 'Junior', 
-    category: 'Tech', 
-    location: 'Odense', 
-    tags: ['Python', 'Django', 'React', 'PostgreSQL'], 
-    summary: 'Recent CS graduate with a passion for clean code and open-source contributions.' 
-  },
-  { 
-    id: 't5', 
-    name: 'Christian Berg', 
-    role: 'Sales Representative', 
-    experience: 'Mid', 
-    category: 'Sales', 
-    location: 'Copenhagen', 
-    tags: ['CRM', 'B2B', 'Lead Gen', 'Danish'], 
-    summary: 'Bilingual sales professional with a track record of exceeding quotas in the EdTech sector.' 
-  }
-];
 
 interface TalentExplorerProps {
   isPremium: boolean;
@@ -75,7 +11,7 @@ interface TalentExplorerProps {
 }
 
 const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs }) => {
-  const { t, language } = useApp();
+  const { t, ecosystemUsers } = useApp();
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     category: 'All',
@@ -85,10 +21,26 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
   const [invitingId, setInvitingId] = useState<string | null>(null);
   const [invitedTalents, setInvitedTalents] = useState<string[]>([]);
 
-  const filteredTalents = mockTalents.filter(talent => {
+  // EXCLUSIVE: Filter out the Master Admin (fillipeferreiramunch@gmail.com) from the talent list
+  const talents = ecosystemUsers
+    .filter(user => user.email.toLowerCase() !== 'fillipeferreiramunch@gmail.com')
+    .map(user => ({
+      id: user.id,
+      name: user.name,
+      role: 'Integrated Node', // Default role for newly registered users
+      experience: 'Expert' as const,
+      category: 'Tech' as const,
+      location: 'Copenhagen Hub',
+      tags: ['Verified', 'Ecosystem'],
+      summary: `Active protocol participant since ${user.joinedAt}. Authenticated via Velix Infrastructure.`,
+      status: user.status
+    }));
+
+  const filteredTalents = talents.filter(talent => {
+    if (talent.status === 'Banned') return false;
+    
     const matchesSearch = talent.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         talent.role.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         talent.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+                         talent.role.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesCategory = filters.category === 'All' || talent.category === filters.category;
     const matchesExp = filters.experience === 'All' || talent.experience === filters.experience;
@@ -102,7 +54,7 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
     setInvitingId(null);
   };
 
-  const locations = Array.from(new Set(mockTalents.map(t => t.location))).concat(['All']).sort();
+  const locations = Array.from(new Set(talents.map(t => t.location))).concat(['All']).sort();
 
   return (
     <div className="space-y-8">
@@ -165,23 +117,6 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
                        }`}
                      >
                        {exp === 'All' ? 'All Levels' : t.talent_explorer.exp_levels[exp]}
-                     </button>
-                   ))}
-                 </div>
-               </div>
-
-               <div className="space-y-4">
-                 <p className="text-[10px] font-black uppercase tracking-widest text-white/40">{t.talent_explorer.location}</p>
-                 <div className="space-y-2">
-                   {locations.map(loc => (
-                     <button
-                       key={loc}
-                       onClick={() => setFilters({ ...filters, location: loc })}
-                       className={`w-full text-left px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                         filters.location === loc ? 'bg-[#2D5A4C] text-white' : 'text-white/40 hover:text-white hover:bg-white/5'
-                       }`}
-                     >
-                       {loc === 'All' ? 'All Locations' : loc}
                      </button>
                    ))}
                  </div>
@@ -297,24 +232,18 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
                           </AnimatePresence>
                         </>
                       )}
-                      <button className="w-full border border-[#2D5A4C]/10 hover:bg-[#F4F7F5] text-[#2D5A4C] px-6 py-4 rounded-2xl font-bold text-sm transition-all">
-                        {t.applicants.view_cv}
-                      </button>
                     </div>
                   </motion.div>
                 ))
               ) : (
                 <div className="py-32 text-center bg-white rounded-3xl border border-dashed border-[#2D5A4C]/10">
                    <div className="w-20 h-20 bg-[#F4F7F5] rounded-full flex items-center justify-center mx-auto mb-6 text-[#2D5A4C]/10">
-                     <Search size={40} />
+                     <User size={40} />
                    </div>
                    <h3 className="text-xl font-black text-[#1A2E26] mb-2">{t.talent_explorer.no_talents}</h3>
-                   <button 
-                     onClick={() => setFilters({ category: 'All', experience: 'All', location: 'All' })}
-                     className="text-[#D6825C] font-black uppercase tracking-widest text-xs hover:underline"
-                   >
-                     Reset Filters
-                   </button>
+                   <p className="text-[#1A2E26]/40 font-bold uppercase tracking-widest text-[10px] max-w-xs mx-auto mb-8">
+                     Wait for real nodes to synchronize with the Nexus.
+                   </p>
                 </div>
               )}
             </AnimatePresence>

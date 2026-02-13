@@ -20,6 +20,7 @@ import FundingPage from './pages/FundingPage';
 import InvestorOnboarding from './pages/InvestorOnboarding';
 import SettingsPage from './pages/SettingsPage';
 import AdminDashboard from './pages/AdminDashboard';
+import AdminPage from './pages/AdminPage';
 import NotFound from './pages/NotFound';
 import { AnimatePresence } from 'framer-motion';
 import Logo from './components/Logo';
@@ -97,6 +98,11 @@ const AnimatedRoutes = () => {
         <Route path="/admin" element={
           <AdminRoute>
             <AdminDashboard />
+          </AdminRoute>
+        } />
+        <Route path="/admin/master" element={
+          <AdminRoute>
+            <AdminPage />
           </AdminRoute>
         } />
         <Route path="/404" element={<NotFound />} />

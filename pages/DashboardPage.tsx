@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   LogOut, LifeBuoy, PlusCircle, User, Menu, X, ShieldAlert, MapPin, 
   Mail, MessageCircle, Edit3, Users, Rocket, Zap, Database, Terminal,
-  ArrowLeft, ExternalLink, ShieldCheck, Globe
+  ArrowLeft, ExternalLink, ShieldCheck, Globe, Crown
 } from 'lucide-react';
 import Logo from '../components/Logo';
 import PostJobModal from '../components/PostJobModal';
@@ -35,6 +35,9 @@ const DashboardPage: React.FC = () => {
 
   const selectedJob = userCreatedJobs.find(j => j.id === selectedJobId);
   const jobApplicants = applications.filter(app => app.jobId === selectedJobId);
+
+  // STRICT CHECK: fillipeferreiramunch@gmail.com
+  const isMasterAdmin = user?.email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
 
   const tabs = [
     { id: 'talent', label: t.tab_talent, icon: <Users size={18} /> },
@@ -71,6 +74,17 @@ const DashboardPage: React.FC = () => {
               {tab.badge && <span className="bg-[#D6825C] text-white text-[10px] px-2 py-0.5 rounded-full font-black">{tab.badge}</span>}
             </button>
           ))}
+          
+          {/* Master Admin Portal Access */}
+          {isMasterAdmin && (
+            <button 
+              onClick={() => navigate('/admin/master')}
+              className="w-full flex items-center space-x-4 px-6 py-4 rounded-xl font-black text-sm text-[#D6825C] bg-[#D6825C]/10 border border-[#D6825C]/20 mt-8 hover:bg-[#D6825C]/20 transition-all shadow-lg shadow-[#D6825C]/5"
+            >
+              <Crown size={18} fill="currentColor" />
+              <span>Master Protocol</span>
+            </button>
+          )}
         </nav>
         
         <div className="mt-12 pt-8 border-t border-white/5">

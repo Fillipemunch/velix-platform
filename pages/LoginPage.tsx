@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -19,7 +18,9 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     if (email && password) {
       login(email);
-      navigate('/dashboard');
+      // EXCLUSIVE REDIRECT: Master Admin goes to Master Hub, others to Dashboard
+      const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
+      navigate(isAdmin ? '/admin/master' : '/dashboard');
     }
   };
 

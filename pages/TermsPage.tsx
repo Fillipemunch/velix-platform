@@ -66,18 +66,6 @@ const TermsPage: React.FC = () => {
               {t.terms.section2Text}
             </p>
           </section>
-
-          <section className="bg-white p-10 md:p-12 rounded-2xl border border-[#2D5A4C]/5 shadow-sm">
-            <div className="flex items-center space-x-4 mb-6">
-              <div className="w-12 h-12 bg-[#2D5A4C]/5 text-[#2D5A4C] rounded-xl flex items-center justify-center">
-                <FileText size={24} />
-              </div>
-              <h2 className="text-2xl font-black text-[#1A2E26] tracking-tight">{t.terms.section3Title}</h2>
-            </div>
-            <p className="text-[#1A2E26]/70 leading-relaxed font-medium text-lg">
-              {t.terms.section3Text}
-            </p>
-          </section>
         </div>
         
         <div className="mt-20 pt-12 border-t border-[#2D5A4C]/10 text-center">

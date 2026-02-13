@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
@@ -8,7 +7,7 @@ import { Mail, Lock, ArrowLeft, User } from 'lucide-react';
 import Logo from '../components/Logo';
 
 const SignUpPage: React.FC = () => {
-  const { t } = useApp();
+  const { t, addEcosystemUser } = useApp();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -18,8 +17,13 @@ const SignUpPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && password) {
+      // Register the user in the ecosystem registry
+      addEcosystemUser(name, email);
+      // Authenticate
       login(email);
-      navigate('/dashboard');
+      // EXCLUSIVE REDIRECT: Master Admin goes to Master Hub, others to Dashboard
+      const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
+      navigate(isAdmin ? '/admin/master' : '/dashboard');
     }
   };
 

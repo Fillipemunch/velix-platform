@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
@@ -18,9 +17,9 @@ const SettingsPage: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false);
 
   const [formData, setFormData] = useState({
-    startupName: user?.name || 'My Startup',
-    email: user?.email || 'admin@startup.com',
-    bio: 'Innovative technology scaling across the European Nexus.',
+    startupName: user?.name || 'Velix Node',
+    email: user?.email || '',
+    bio: '',
     notifCandidates: true,
     notifMarketing: false
   });
@@ -37,6 +36,9 @@ const SettingsPage: React.FC = () => {
     { id: 'security', label: t.settings.tab_security, icon: <Shield size={18} /> },
     { id: 'notifications', label: t.settings.tab_notifications, icon: <Bell size={18} /> },
   ];
+
+  // REMOVED MOCK DATA: History is now empty until real transactions are implemented.
+  const billingHistory: any[] = [];
 
   return (
     <motion.div 
@@ -117,7 +119,7 @@ const SettingsPage: React.FC = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-[#0A1128]/30 ml-3">{t.settings.profile_name}</label>
                         <input 
                           type="text" 
-                          className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#0A1128] transition-all shadow-sm" 
+                          className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#1A2E26] transition-all shadow-sm" 
                           value={formData.startupName}
                           onChange={(e) => setFormData({...formData, startupName: e.target.value})}
                         />
@@ -126,9 +128,9 @@ const SettingsPage: React.FC = () => {
                         <label className="text-[10px] font-black uppercase tracking-widest text-[#0A1128]/30 ml-3">{t.settings.profile_email}</label>
                         <input 
                           type="email" 
-                          className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#0A1128] transition-all shadow-sm" 
+                          className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#1A2E26] transition-all shadow-sm" 
                           value={formData.email}
-                          onChange={(e) => setFormData({...formData, email: e.target.value})}
+                          readOnly
                         />
                       </div>
                     </div>
@@ -136,8 +138,9 @@ const SettingsPage: React.FC = () => {
                       <label className="text-[10px] font-black uppercase tracking-widest text-[#0A1128]/30 ml-3">{t.settings.profile_bio}</label>
                       <textarea 
                         rows={5}
-                        className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#0A1128] transition-all resize-none shadow-sm leading-relaxed" 
+                        className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#1A2E26] transition-all resize-none shadow-sm leading-relaxed" 
                         value={formData.bio}
+                        placeholder="Define your entity's bio..."
                         onChange={(e) => setFormData({...formData, bio: e.target.value})}
                       />
                     </div>
@@ -172,14 +175,14 @@ const SettingsPage: React.FC = () => {
                             {isSubscribed ? t.settings.plan_premium : t.settings.plan_free}
                           </span>
                         </div>
-                        <p className="text-5xl font-black text-[#0A1128] tracking-tighter">
-                          {isSubscribed ? '54.00 €' : '0.00 €'}
+                        <p className="text-5xl font-black text-[#0A1128] tracking-tighter uppercase">
+                          {isSubscribed ? t.pricing.price : '0.00 €'}
                           <span className="text-base font-bold text-[#0A1128]/30 uppercase tracking-widest ml-3">/ {t.pricing.period}</span>
                         </p>
                         {isSubscribed && (
                           <div className="flex items-center mt-8 space-x-6 text-xs font-bold text-[#0A1128]/50">
-                            <span className="flex items-center"><CheckCircle2 size={16} className="text-[#5865F2] mr-2" /> Auto-Renewing</span>
-                            <span className="uppercase tracking-widest text-[10px]">{t.settings.next_billing}: Feb 22, 2026</span>
+                            <span className="flex items-center"><CheckCircle2 size={16} className="text-[#5865F2] mr-2" /> {t.settings.plan_premium}</span>
+                            <span className="uppercase tracking-widest text-[10px]">{t.settings.next_billing}: Active Node</span>
                           </div>
                         )}
                       </div>
@@ -200,25 +203,6 @@ const SettingsPage: React.FC = () => {
                     </div>
                   </div>
 
-                  {!isSubscribed && (
-                    <div className="bg-[#0A1128] p-12 rounded-[3.5rem] text-white shadow-2xl relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full -mr-40 -mt-40 z-0 group-hover:scale-110 transition-transform duration-1000" />
-                      <div className="relative z-10">
-                        <div className="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center mb-8">
-                          <Zap size={32} className="text-[#00D1FF]" fill="currentColor" />
-                        </div>
-                        <h3 className="text-3xl font-black mb-3 tracking-tight">{t.settings.upgrade_banner_title}</h3>
-                        <p className="text-white/50 mb-10 font-medium max-w-sm text-lg leading-relaxed">{t.settings.upgrade_banner_desc}</p>
-                        <button 
-                          onClick={() => navigate('/pricing')}
-                          className="px-12 py-5 bg-[#5865F2] hover:bg-[#4752C4] rounded-full font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-xl shadow-[#5865F2]/20"
-                        >
-                          View Pricing Matrix
-                        </button>
-                      </div>
-                    </div>
-                  )}
-
                   {/* Billing History Table */}
                   <div className="pt-8">
                     <h3 className="text-xl font-black text-[#0A1128] mb-10 uppercase tracking-[0.2em] flex items-center">
@@ -226,10 +210,7 @@ const SettingsPage: React.FC = () => {
                        {t.settings.billing_history}
                     </h3>
                     <div className="space-y-3">
-                      {[
-                        { date: 'Jan 22, 2026', amount: '54.00 €' },
-                        { date: 'Dec 22, 2025', amount: '54.00 €' }
-                      ].map((invoice, i) => (
+                      {billingHistory.length > 0 ? billingHistory.map((invoice, i) => (
                         <div key={i} className="flex items-center justify-between p-8 bg-slate-50/50 rounded-[2rem] border border-transparent hover:border-[#5865F2]/10 transition-all group shadow-sm hover:shadow-xl">
                           <div className="flex items-center space-x-8">
                             <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-[#5865F2] shadow-sm">
@@ -237,7 +218,7 @@ const SettingsPage: React.FC = () => {
                             </div>
                             <div>
                               <p className="text-lg font-black text-[#0A1128]">{invoice.date}</p>
-                              <p className="text-[10px] font-bold text-[#0A1128]/20 uppercase tracking-widest mt-1">VX-2026-00{i+1}</p>
+                              <p className="text-[10px] font-bold text-[#0A1128]/20 uppercase tracking-widest mt-1">VX-SYNC-{i+101}</p>
                             </div>
                           </div>
                           <div className="flex items-center space-x-12">
@@ -247,7 +228,12 @@ const SettingsPage: React.FC = () => {
                             </button>
                           </div>
                         </div>
-                      ))}
+                      )) : (
+                        <div className="py-20 text-center border-2 border-dashed border-slate-100 rounded-[3rem]">
+                           <Database size={40} className="mx-auto text-slate-200 mb-4" />
+                           <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No transaction records found</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -269,11 +255,11 @@ const SettingsPage: React.FC = () => {
                     <div className="max-w-md space-y-8">
                       <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-[#0A1128]/30 ml-3">Current Vault Key</label>
-                        <input type="password" placeholder="••••••••" className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#0A1128] transition-all shadow-sm" />
+                        <input type="password" placeholder="••••••••" className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#1A2E26] transition-all shadow-sm" />
                       </div>
                       <div className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-[#0A1128]/30 ml-3">New Vault Key</label>
-                        <input type="password" placeholder="••••••••" className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#0A1128] transition-all shadow-sm" />
+                        <input type="password" placeholder="••••••••" className="w-full px-8 py-5 rounded-2xl bg-slate-50 border border-transparent focus:bg-white focus:border-[#5865F2] outline-none font-bold text-[#1A2E26] transition-all shadow-sm" />
                       </div>
                     </div>
                     <button className="bg-[#0A1128] text-white px-12 py-5 rounded-full font-black text-xs uppercase tracking-widest hover:bg-[#1A2542] transition-all active:scale-95 shadow-xl shadow-[#0A1128]/20">

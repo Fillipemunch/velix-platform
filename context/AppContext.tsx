@@ -18,6 +18,15 @@ export interface Application {
   status: ApplicationStatus;
 }
 
+export interface EcosystemUser {
+  id: string;
+  name: string;
+  email: string;
+  joinedAt: string;
+  status: 'Active' | 'Banned';
+  isSuspicious?: boolean;
+}
+
 interface AppContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -30,13 +39,20 @@ interface AppContextType {
   updateApplicationStatus: (appId: string, status: ApplicationStatus) => void;
   investors: Investor[];
   addInvestor: (investor: Omit<Investor, 'id' | 'status' | 'isVerified' | 'paymentStatus'>) => void;
+  deleteInvestor: (id: string) => void;
   allJobs: Job[];
   userCreatedJobs: Job[];
   addUserJob: (job: Omit<Job, 'id' | 'status' | 'isVerified' | 'company' | 'logo' | 'postedAt' | 'tags' | 'paymentStatus'>) => void;
+  deleteJob: (id: string) => void;
   totalUserPosts: number;
   moderateJob: (jobId: string, status: 'Approved' | 'Rejected') => void;
   moderateInvestor: (investorId: string, status: 'Approved' | 'Rejected') => void;
   getCheckoutPrice: (cvr: string) => { amount: number; currency: string };
+  ecosystemUsers: EcosystemUser[];
+  addEcosystemUser: (name: string, email: string) => void;
+  banUser: (id: string) => void;
+  runFakeCleanup: () => { removedCount: number };
+  nukeDatabase: () => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -72,6 +88,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     return saved ? JSON.parse(saved) : [];
   });
 
+  const [ecosystemUsers, setEcosystemUsers] = useState<EcosystemUser[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const saved = localStorage.getItem('velix_ecosystem_users');
+    if (saved) return JSON.parse(saved);
+    
+    // START FRESH: Only show real users. No bots or development fakes.
+    return [
+      { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', joinedAt: '2025-12-01', status: 'Active' },
+    ];
+  });
+
   useEffect(() => {
     localStorage.setItem('velix_lang', language);
   }, [language]);
@@ -87,6 +114,36 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     localStorage.setItem('velix_all_jobs', JSON.stringify(allJobs));
   }, [allJobs]);
+
+  useEffect(() => {
+    localStorage.setItem('velix_ecosystem_users', JSON.stringify(ecosystemUsers));
+  }, [ecosystemUsers]);
+
+  const addEcosystemUser = (name: string, email: string) => {
+    setEcosystemUsers(prev => {
+      if (prev.some(u => u.email.toLowerCase() === email.toLowerCase())) return prev;
+      const newUser: EcosystemUser = {
+        id: Math.random().toString(36).substr(2, 9),
+        name,
+        email,
+        joinedAt: new Date().toISOString().split('T')[0],
+        status: 'Active'
+      };
+      return [...prev, newUser];
+    });
+  };
+
+  const nukeDatabase = () => {
+    // Keep only the master admin
+    const masterAdmin = ecosystemUsers.find(u => u.email === 'fillipeferreiramunch@gmail.com');
+    setEcosystemUsers(masterAdmin ? [masterAdmin] : []);
+    setAllJobs([]);
+    setInvestors([]);
+    setApplications([]);
+    localStorage.removeItem('velix_all_jobs');
+    localStorage.removeItem('velix_investors');
+    localStorage.removeItem('velix_applications');
+  };
 
   const getCheckoutPrice = (cvr: string) => {
     const isDanish = cvr.toUpperCase().startsWith('DK') || cvr.length === 8;
@@ -130,6 +187,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setInvestors(prev => [newInvestor, ...prev]);
   };
 
+  const deleteInvestor = (id: string) => {
+    setInvestors(prev => prev.filter(i => i.id !== id));
+  };
+
   const addUserJob = (jobData: Omit<Job, 'id' | 'status' | 'isVerified' | 'company' | 'logo' | 'postedAt' | 'tags' | 'paymentStatus'>) => {
     const id = Math.random().toString(36).substr(2, 9);
     const newJob: Job = {
@@ -146,11 +207,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setAllJobs(prev => [newJob, ...prev]);
   };
 
+  const deleteJob = (id: string) => {
+    setAllJobs(prev => prev.filter(j => j.id !== id));
+  };
+
   const moderateJob = (jobId: string, status: 'Approved' | 'Rejected') => {
     setAllJobs(prev => prev.map(j => j.id === jobId ? { 
       ...j, 
       status, 
-      isVerified: status === 'Approved' && j.paymentStatus === 'Paid' 
+      isVerified: status === 'Approved' 
     } : j));
   };
 
@@ -158,8 +223,32 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setInvestors(prev => prev.map(i => i.id === investorId ? { 
       ...i, 
       status, 
-      isVerified: status === 'Approved' && i.paymentStatus === 'Paid' 
+      isVerified: status === 'Approved' 
     } : i));
+  };
+
+  const banUser = (id: string) => {
+    setEcosystemUsers(prev => prev.map(u => u.id === id ? { ...u, status: u.status === 'Active' ? 'Banned' : 'Active' } : u));
+  };
+
+  const runFakeCleanup = () => {
+    const suspiciousDomains = ['tempmail.com', 'mailinator.com', '10minutemail.com', 'sharklasers.com', 'guerrillamail.com'];
+    
+    const initialCount = ecosystemUsers.length;
+    const cleanedUsers = ecosystemUsers.filter(user => {
+      const emailDomain = user.email.split('@')[1];
+      const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);
+      
+      const localPart = user.email.split('@')[0];
+      const hasRandomPattern = /\d{5,}/.test(localPart);
+      
+      if (user.email === 'fillipeferreiramunch@gmail.com') return true;
+      
+      return !isSuspiciousDomain && !hasRandomPattern;
+    });
+
+    setEcosystemUsers(cleanedUsers);
+    return { removedCount: initialCount - cleanedUsers.length };
   };
 
   const userCreatedJobs = allJobs; 
@@ -180,13 +269,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       updateApplicationStatus,
       investors,
       addInvestor,
+      deleteInvestor,
       allJobs,
       userCreatedJobs,
       addUserJob,
+      deleteJob,
       totalUserPosts,
       moderateJob,
       moderateInvestor,
-      getCheckoutPrice
+      getCheckoutPrice,
+      ecosystemUsers,
+      addEcosystemUser,
+      banUser,
+      runFakeCleanup,
+      nukeDatabase
     }}>
       {children}
     </AppContext.Provider>
@@ -208,13 +304,20 @@ export const useApp = () => {
       updateApplicationStatus: () => {},
       investors: [],
       addInvestor: () => {},
+      deleteInvestor: () => {},
       allJobs: [],
       userCreatedJobs: [],
       addUserJob: () => {},
+      deleteJob: () => {},
       totalUserPosts: 0,
       moderateJob: () => {},
       moderateInvestor: () => {},
-      getCheckoutPrice: () => ({ amount: 54, currency: 'eur' })
+      getCheckoutPrice: () => ({ amount: 54, currency: 'eur' }),
+      ecosystemUsers: [],
+      addEcosystemUser: () => {},
+      banUser: () => {},
+      runFakeCleanup: () => ({ removedCount: 0 }),
+      nukeDatabase: () => {}
     } as any;
   }
   return context;

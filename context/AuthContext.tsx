@@ -30,7 +30,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = (email: string) => {
-    const isAdmin = email.toLowerCase() === 'fillipe@velix.dk' || email.toLowerCase().includes('admin');
+    // EXPLICIT ADMIN VALIDATION: Restricted to the specified founder email
+    const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
+    
     const userData: User = { 
       email, 
       name: email.split('@')[0], 
