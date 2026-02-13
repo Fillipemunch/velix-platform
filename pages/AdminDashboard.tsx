@@ -14,7 +14,7 @@ import {
 const AdminDashboard: React.FC = () => {
   const { 
     investors, allJobs, moderateJob, moderateInvestor, 
-    deleteJob, deleteInvestor, ecosystemUsers, banUser, runFakeCleanup
+    deleteJob, deleteInvestor, ecosystemUsers, banUser, runFakeCleanup, t
   } = useApp();
   const { user, isAdmin, logout } = useAuth();
   const navigate = useNavigate();
@@ -44,15 +44,15 @@ const AdminDashboard: React.FC = () => {
         >
           <ShieldAlert size={48} />
         </motion.div>
-        <h1 className="text-4xl font-black text-white mb-4 uppercase tracking-tighter leading-none">Acesso Denegado</h1>
+        <h1 className="text-4xl font-black text-white mb-4 uppercase tracking-tighter leading-none">Access Denied</h1>
         <p className="text-white/40 font-medium mb-8 max-w-sm mx-auto">
-          Protocolo de segurança ativado. Este terminal é restrito exclusivamente ao Administrador Mestre: <br/><span className="text-[#D6825C] mt-2 block font-black">{MASTER_ADMIN_EMAIL}</span>
+          Security protocol active. This terminal is restricted to the Master Administrator: <br/><span className="text-[#D6825C] mt-2 block font-black">{MASTER_ADMIN_EMAIL}</span>
         </p>
         <button 
           onClick={() => navigate('/')} 
           className="bg-[#D6825C] text-white px-10 py-4 rounded-xl font-black text-xs uppercase tracking-widest shadow-2xl active:scale-95 transition-all"
         >
-          Retornar ao Início
+          Return to Home
         </button>
       </div>
     );
@@ -68,8 +68,8 @@ const AdminDashboard: React.FC = () => {
   };
 
   const allPosts = [
-    ...allJobs.map(j => ({ ...j, type: 'Market Entry' })),
-    ...investors.map(i => ({ ...i, type: 'Capital Node', title: i.name }))
+    ...allJobs.map(j => ({ ...j, type: t.admin.type_job })),
+    ...investors.map(i => ({ ...i, type: t.admin.type_investor, title: i.name }))
   ];
 
   const moderationQueue = [
@@ -78,9 +78,9 @@ const AdminDashboard: React.FC = () => {
   ];
 
   const stats = [
-    { label: 'Entidades no Nexus', value: ecosystemUsers.length, icon: <Users size={20} />, color: 'bg-blue-500/10 text-blue-500' },
-    { label: 'Sinais Ativos', value: allPosts.length, icon: <Terminal size={20} />, color: 'bg-[#D6825C]/10 text-[#D6825C]' },
-    { label: 'Vetting Pendente', value: moderationQueue.length, icon: <ShieldQuestion size={20} />, color: 'bg-orange-500/10 text-orange-500' },
+    { label: t.admin.metrics_users, value: ecosystemUsers.length, icon: <Users size={20} />, color: 'bg-blue-500/10 text-blue-500' },
+    { label: t.admin.stats_signals, value: allPosts.length, icon: <Terminal size={20} />, color: 'bg-[#D6825C]/10 text-[#D6825C]' },
+    { label: t.admin.stats_vetting, value: moderationQueue.length, icon: <ShieldQuestion size={20} />, color: 'bg-orange-500/10 text-orange-500' },
   ];
 
   const filteredUsers = ecosystemUsers.filter(u => 
@@ -95,7 +95,6 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col lg:flex-row pt-16 lg:pt-0 font-sans">
-      {/* Sidebar Navigation */}
       <aside className="w-full lg:w-80 bg-[#1a2e26] text-white flex flex-col h-screen fixed lg:sticky top-0 left-0 z-[100] p-10 border-r border-white/5">
         <div className="mb-16">
           <div className="flex items-center space-x-4 mb-6">
@@ -109,10 +108,10 @@ const AdminDashboard: React.FC = () => {
 
         <nav className="flex-1 space-y-3">
           {[
-            { id: 'users', label: 'Gestão de Usuários', icon: <Users size={20} /> },
-            { id: 'posts', label: 'Moderação de Posts', icon: <Terminal size={20} /> },
-            { id: 'cleanup', label: 'Limpeza de Fakes', icon: <Sparkles size={20} />, color: 'text-[#D6825C]' },
-            { id: 'moderation', label: 'Fila de Vetting', icon: <ShieldCheck size={20} />, badge: moderationQueue.length },
+            { id: 'users', label: t.admin.user_management, icon: <Users size={20} /> },
+            { id: 'posts', label: t.admin.content_mod, icon: <Terminal size={20} /> },
+            { id: 'cleanup', label: t.admin.fake_cleanup, icon: <Sparkles size={20} />, color: 'text-[#D6825C]' },
+            { id: 'moderation', label: t.admin.vetting_queue, icon: <ShieldCheck size={20} />, badge: moderationQueue.length },
           ].map(tab => (
             <button
               key={tab.id}
@@ -144,24 +143,23 @@ const AdminDashboard: React.FC = () => {
             onClick={() => { logout(); navigate('/'); }} 
             className="w-full flex items-center px-6 py-4 text-xs font-black text-red-400 hover:bg-red-400/5 transition-all rounded-2xl uppercase tracking-widest"
           >
-            <LogOut size={16} className="mr-4" /> Deautenticar Terminal
+            <LogOut size={16} className="mr-4" /> {t.admin.deauth_terminal}
           </button>
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 p-8 lg:p-16 overflow-y-auto">
         <div className="max-w-6xl mx-auto space-y-12">
           <header className="flex flex-col md:flex-row md:items-end justify-between gap-10">
             <div>
-              <h1 className="text-5xl font-black text-[#1a2e26] tracking-tighter uppercase leading-none">Painel de Controle</h1>
-              <p className="text-[#1a2e26]/30 font-black uppercase tracking-[0.4em] text-[10px] mt-4 ml-1">Ecosystem Infrastructure • Protocol v2.5.0</p>
+              <h1 className="text-5xl font-black text-[#1a2e26] tracking-tighter uppercase leading-none">{t.admin.dashboard_title}</h1>
+              <p className="text-[#1a2e26]/30 font-black uppercase tracking-[0.4em] text-[10px] mt-4 ml-1">{t.admin.dashboard_subtitle}</p>
             </div>
             <div className="relative group">
                <Search size={18} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#D6825C] transition-colors" />
                <input 
                 type="text" 
-                placeholder="Consultar Protocolo Nexus..." 
+                placeholder={t.admin.search_placeholder} 
                 className="pl-14 pr-8 py-4 rounded-2xl bg-white border border-slate-100 text-xs font-bold focus:ring-4 focus:ring-[#D6825C]/5 outline-none w-full md:w-80 transition-all shadow-sm" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -169,7 +167,6 @@ const AdminDashboard: React.FC = () => {
             </div>
           </header>
 
-          {/* Stats Summary */}
           <div className="grid md:grid-cols-3 gap-6">
             {stats.map((s, i) => (
               <motion.div 
@@ -190,7 +187,6 @@ const AdminDashboard: React.FC = () => {
             ))}
           </div>
 
-          {/* Tab Content */}
           <div className="bg-white rounded-[3.5rem] border border-slate-50 shadow-sm overflow-hidden min-h-[500px]">
             <div className="p-8 md:p-12">
               <AnimatePresence mode="wait">
@@ -200,18 +196,18 @@ const AdminDashboard: React.FC = () => {
                       <div className="w-10 h-10 bg-[#1a2e26] text-white rounded-xl flex items-center justify-center">
                         <Users size={20} />
                       </div>
-                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">Gestão de Usuários</h3>
+                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">{t.admin.user_management}</h3>
                     </div>
                     
                     <div className="overflow-x-auto">
                       <table className="w-full text-left">
                         <thead>
                           <tr className="text-[10px] font-black uppercase tracking-widest text-slate-300 border-b border-slate-50">
-                            <th className="px-6 py-6">Nome / Entidade</th>
-                            <th className="px-6 py-6">Canal de E-mail</th>
-                            <th className="px-6 py-6">Data de Ingresso</th>
-                            <th className="px-6 py-6">Protocolo</th>
-                            <th className="px-6 py-6 text-right">Ação Corretiva</th>
+                            <th className="px-6 py-6">Name / Entity</th>
+                            <th className="px-6 py-6">Email Endpoint</th>
+                            <th className="px-6 py-6">Joined At</th>
+                            <th className="px-6 py-6">Protocol Status</th>
+                            <th className="px-6 py-6 text-right">Corrective Action</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -251,7 +247,7 @@ const AdminDashboard: React.FC = () => {
                       <div className="w-10 h-10 bg-[#1a2e26] text-white rounded-xl flex items-center justify-center">
                         <Terminal size={20} />
                       </div>
-                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">Moderação de Conteúdo</h3>
+                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">{t.admin.content_mod}</h3>
                     </div>
 
                     <div className="grid gap-4">
@@ -259,7 +255,7 @@ const AdminDashboard: React.FC = () => {
                         <div key={p.id} className="p-6 bg-slate-50/50 rounded-2xl border border-transparent hover:border-[#1a2e26]/5 transition-all flex items-center justify-between group">
                           <div className="flex items-center space-x-6">
                             <div className="w-12 h-12 bg-white rounded-xl border border-slate-100 flex items-center justify-center font-black text-[#1a2e26]">
-                              {p.type === 'Market Entry' ? 'J' : 'I'}
+                              {p.type === t.admin.type_job ? 'J' : 'I'}
                             </div>
                             <div>
                               <p className="text-lg font-black text-[#1a2e26] tracking-tight">{p.title || p.name}</p>
@@ -271,7 +267,7 @@ const AdminDashboard: React.FC = () => {
                             </div>
                           </div>
                           <button 
-                            onClick={() => p.type === 'Market Entry' ? deleteJob(p.id) : deleteInvestor(p.id)}
+                            onClick={() => (p.type === t.admin.type_job || p.type === 'Market Entry') ? deleteJob(p.id) : deleteInvestor(p.id)}
                             className="p-4 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-2xl transition-all opacity-0 group-hover:opacity-100"
                           >
                             <Trash2 size={20} />
@@ -288,16 +284,16 @@ const AdminDashboard: React.FC = () => {
                       <div className="w-10 h-10 bg-[#D6825C] text-white rounded-xl flex items-center justify-center">
                         <Sparkles size={20} />
                       </div>
-                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">Limpeza Automática de Fakes</h3>
+                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">{t.admin.fake_cleanup}</h3>
                     </div>
 
                     <div className="bg-slate-50 p-12 rounded-[2.5rem] border border-slate-100 text-center flex flex-col items-center">
                        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-10 text-[#D6825C] shadow-xl border border-slate-50">
                           {isCleaning ? <Zap size={48} className="animate-pulse" /> : <Ghost size={48} />}
                        </div>
-                       <h4 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tighter mb-6">Escaneamento de Protocolo</h4>
+                       <h4 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tighter mb-6">Protocol Scan</h4>
                        <p className="text-[#1a2e26]/50 font-medium max-w-sm mx-auto mb-12 text-lg leading-relaxed">
-                         O sistema irá identificar e remover instantaneamente perfis com e-mails temporários, padrões de bots e nós inativos no ecossistema.
+                         The system will identify and instantly remove profiles with temporary emails, bot patterns, and inactive nodes in the ecosystem.
                        </p>
 
                        <div className="flex flex-col items-center gap-6">
@@ -306,14 +302,14 @@ const AdminDashboard: React.FC = () => {
                           disabled={isCleaning}
                           className={`px-12 py-5 bg-[#1a2e26] text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex items-center space-x-3 ${isCleaning ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#D6825C]'}`}
                          >
-                           {isCleaning ? <><Database className="animate-spin" size={16} /> <span>Limpando Ecossistema...</span></> : <> <Zap size={16} fill="currentColor" /> <span>Iniciar Limpeza Automática</span> </>}
+                           {isCleaning ? <><Database className="animate-spin" size={16} /> <span>Cleaning Ecosystem...</span></> : <> <Zap size={16} fill="currentColor" /> <span>Start Automated Cleanup</span> </>}
                          </button>
 
                          <AnimatePresence>
                            {cleanupResult !== null && (
                              <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="mt-8 bg-green-50 text-green-600 px-8 py-4 rounded-2xl border border-green-100 flex items-center space-x-3">
                                <CheckCircle2 size={18} />
-                               <span className="text-xs font-black uppercase tracking-widest">{cleanupResult} Fakes Removidos com Sucesso</span>
+                               <span className="text-xs font-black uppercase tracking-widest">{cleanupResult} Fakes Removed Successfully</span>
                              </motion.div>
                            )}
                          </AnimatePresence>
@@ -322,13 +318,13 @@ const AdminDashboard: React.FC = () => {
                        <div className="mt-16 grid md:grid-cols-2 gap-6 w-full max-w-2xl text-left">
                          <div className="bg-white p-6 rounded-2xl border border-slate-100">
                             <AlertTriangle size={18} className="text-orange-400 mb-3" />
-                            <h5 className="font-black text-[#1a2e26] text-xs uppercase tracking-widest">Domínios Bloqueados</h5>
+                            <h5 className="font-black text-[#1a2e26] text-xs uppercase tracking-widest">Blocked Domains</h5>
                             <p className="text-[10px] text-[#1a2e26]/40 font-bold mt-1 uppercase">tempmail, mailinator, 10minutemail</p>
                          </div>
                          <div className="bg-white p-6 rounded-2xl border border-slate-100">
                             <Filter size={18} className="text-blue-400 mb-3" />
-                            <h5 className="font-black text-[#1a2e26] text-xs uppercase tracking-widest">Padrão de Bot</h5>
-                            <p className="text-[10px] text-[#1a2e26]/40 font-bold mt-1 uppercase">Sequências randômicas e nomes genéricos</p>
+                            <h5 className="font-black text-[#1a2e26] text-xs uppercase tracking-widest">Bot Pattern Detect</h5>
+                            <p className="text-[10px] text-[#1a2e26]/40 font-bold mt-1 uppercase">Random sequences and generic labels</p>
                          </div>
                        </div>
                     </div>
@@ -341,7 +337,7 @@ const AdminDashboard: React.FC = () => {
                       <div className="w-10 h-10 bg-[#1a2e26] text-white rounded-xl flex items-center justify-center">
                         <ShieldCheck size={20} />
                       </div>
-                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">Fila de Moderação</h3>
+                      <h3 className="text-2xl font-black text-[#1a2e26] uppercase">{t.admin.vetting_queue}</h3>
                     </div>
 
                     {moderationQueue.length > 0 ? (
@@ -355,7 +351,7 @@ const AdminDashboard: React.FC = () => {
                               <div>
                                 <h4 className="text-xl font-black text-[#1a2e26] tracking-tight">{item.title || item.name}</h4>
                                 <p className="text-[10px] font-bold text-slate-300 uppercase tracking-widest mt-1">
-                                  {item.type === 'job' ? 'Vaga Pendente' : 'Investidor Pendente'} • ID: {item.id}
+                                  {item.type === 'job' ? t.admin.status_pending : t.admin.status_pending} • ID: {item.id}
                                 </p>
                               </div>
                             </div>
@@ -364,7 +360,7 @@ const AdminDashboard: React.FC = () => {
                                 onClick={() => item.type === 'job' ? moderateJob(item.id, 'Approved') : moderateInvestor(item.id, 'Approved')}
                                 className="bg-[#1a2e26] text-white px-8 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-[#D6825C] transition-all shadow-lg active:scale-95"
                               >
-                                Autorizar
+                                {t.admin.approve}
                               </button>
                               <button 
                                 onClick={() => item.type === 'job' ? moderateJob(item.id, 'Rejected') : moderateInvestor(item.id, 'Rejected')}
@@ -381,8 +377,8 @@ const AdminDashboard: React.FC = () => {
                         <div className="w-20 h-20 bg-green-50 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
                           <CheckCircle2 size={40} />
                         </div>
-                        <h4 className="text-xl font-black text-[#1a2e26] uppercase tracking-tight">Sistema Limpo</h4>
-                        <p className="text-slate-400 font-medium">Nenhuma postagem pendente de revisão no protocolo.</p>
+                        <h4 className="text-xl font-black text-[#1a2e26] uppercase tracking-tight">{t.admin.clean_system}</h4>
+                        <p className="text-slate-400 font-medium">{t.admin.no_pending_msg}</p>
                       </div>
                     )}
                   </motion.div>
@@ -396,7 +392,7 @@ const AdminDashboard: React.FC = () => {
               VELIX CORE INFRASTRUCTURE • MASTER CONSOLE v2.5
             </p>
             <div className="flex items-center space-x-6">
-              <span className="text-[8px] font-bold text-slate-200 uppercase tracking-widest">fillipeferreiramunch@gmail.com VERIFIED</span>
+              <span className="text-[8px] font-bold text-slate-200 uppercase tracking-widest">{MASTER_ADMIN_EMAIL} VERIFIED</span>
               <div className="w-1 h-1 bg-slate-200 rounded-full" />
               <span className="text-[8px] font-bold text-slate-200 uppercase tracking-widest">IP ENCRYPTED</span>
             </div>

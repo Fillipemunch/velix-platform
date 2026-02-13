@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 const AdminPage: React.FC = () => {
-  const { ecosystemUsers, nukeDatabase, allJobs, investors, moderateJob, moderateInvestor, banUser, deleteJob, deleteInvestor } = useApp();
+  const { ecosystemUsers, nukeDatabase, allJobs, investors, moderateJob, moderateInvestor, banUser, deleteJob, deleteInvestor, t } = useApp();
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   
@@ -54,10 +54,10 @@ const AdminPage: React.FC = () => {
   ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 8);
 
   const stats = [
-    { label: 'Talent Nodes', value: ecosystemUsers.length, icon: <Users size={20} />, color: 'text-blue-500' },
-    { label: 'Corporate Nodes', value: allJobs.length, icon: <Briefcase size={20} />, color: 'text-orange-500' },
-    { label: 'Capital Nodes', value: investors.length, icon: <Rocket size={20} />, color: 'text-[#D6825C]' },
-    { label: 'System Health', value: '100%', icon: <Activity size={20} />, color: 'text-green-500' },
+    { label: t.admin_master.talents, value: ecosystemUsers.length, icon: <Users size={20} />, color: 'text-blue-500' },
+    { label: t.admin_master.companies, value: allJobs.length, icon: <Briefcase size={20} />, color: 'text-orange-500' },
+    { label: t.admin_master.capital, value: investors.length, icon: <Rocket size={20} />, color: 'text-[#D6825C]' },
+    { label: 'Health', value: '100%', icon: <Activity size={20} />, color: 'text-green-500' },
   ];
 
   const handleNuke = () => {
@@ -70,10 +70,10 @@ const AdminPage: React.FC = () => {
   // REAL DATA CHART: Showing growth distribution
   const totalEntities = ecosystemUsers.length + allJobs.length + investors.length || 1;
   const chartValues = [
-    { h: `${(ecosystemUsers.length / totalEntities) * 100}%`, color: 'from-blue-500/50 to-blue-500' },
-    { h: `${(allJobs.length / totalEntities) * 100}%`, color: 'from-orange-500/50 to-orange-500' },
-    { h: `${(investors.length / totalEntities) * 100}%`, color: 'from-[#D6825C]/50 to-[#D6825C]' },
-    { h: '10%', color: 'from-slate-500/20 to-slate-500/20' } // Placeholder for zero state
+    { h: `${(ecosystemUsers.length / totalEntities) * 100}%`, color: 'from-blue-500/50 to-blue-500', label: t.admin_master.talents },
+    { h: `${(allJobs.length / totalEntities) * 100}%`, color: 'from-orange-500/50 to-orange-500', label: t.admin_master.companies },
+    { h: `${(investors.length / totalEntities) * 100}%`, color: 'from-[#D6825C]/50 to-[#D6825C]', label: t.admin_master.capital },
+    { h: '10%', color: 'from-slate-500/20 to-slate-500/20', label: t.admin_master.system }
   ];
 
   return (
@@ -82,11 +82,11 @@ const AdminPage: React.FC = () => {
         <div className="mb-12"><div className="w-12 h-12 bg-[#D6825C] rounded-2xl flex items-center justify-center font-black text-white text-xl shadow-2xl">V</div></div>
         <nav className="flex-1 flex flex-col space-y-6">
           {[
-            { id: 'overview', icon: <Activity size={24} />, label: 'Pulse' },
-            { id: 'talents', icon: <Users size={24} />, label: 'Talents' },
-            { id: 'companies', icon: <Briefcase size={24} />, label: 'Companies' },
-            { id: 'investors', icon: <Rocket size={24} />, label: 'Capital' },
-            { id: 'system', icon: <Cpu size={24} />, label: 'System' },
+            { id: 'overview', icon: <Activity size={24} />, label: t.admin_master.pulse },
+            { id: 'talents', icon: <Users size={24} />, label: t.admin_master.talents },
+            { id: 'companies', icon: <Briefcase size={24} />, label: t.admin_master.companies },
+            { id: 'investors', icon: <Rocket size={24} />, label: t.admin_master.capital },
+            { id: 'system', icon: <Cpu size={24} />, label: t.admin_master.system },
           ].map(item => (
             <button key={item.id} onClick={() => setActiveTab(item.id as any)} className={`p-4 rounded-2xl transition-all relative group ${activeTab === item.id ? 'bg-white/10 text-[#D6825C]' : 'text-white/20 hover:text-white'}`}>
               {item.icon}
@@ -102,13 +102,13 @@ const AdminPage: React.FC = () => {
           <div>
             <div className="flex items-center space-x-4 mb-4">
               <Crown className="text-[#D6825C]" size={40} fill="currentColor" />
-              <h1 className="text-6xl font-black text-[#1a2e26] tracking-tighter uppercase leading-none">Master Hub</h1>
+              <h1 className="text-6xl font-black text-[#1a2e26] tracking-tighter uppercase leading-none">{t.admin_master.title}</h1>
             </div>
-            <p className="text-[#1a2e26]/30 font-black uppercase tracking-[0.4em] text-[10px] ml-1">Live Database Matrix • No Simulated Data</p>
+            <p className="text-[#1a2e26]/30 font-black uppercase tracking-[0.4em] text-[10px] ml-1">{t.admin_master.subtitle}</p>
           </div>
           <div className="bg-white px-8 py-6 rounded-[2.5rem] border border-slate-100 shadow-xl flex items-center space-x-6">
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-black text-[#D6825C] uppercase tracking-widest">Protocol Architect</span>
+              <span className="text-[10px] font-black text-[#D6825C] uppercase tracking-widest">{t.admin_master.architect}</span>
               <span className="text-sm font-black text-[#1a2e26]">{MASTER_ADMIN_EMAIL}</span>
             </div>
             <div className="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-600"><ShieldCheck size={24} /></div>
@@ -132,8 +132,8 @@ const AdminPage: React.FC = () => {
                 <div className="lg:col-span-2 bg-[#1a2e26] rounded-[3.5rem] p-12 text-white shadow-2xl relative overflow-hidden">
                   <div className="flex items-center justify-between mb-12 relative z-10">
                     <div>
-                      <h3 className="text-2xl font-black uppercase tracking-tight">Ecosystem Distribution</h3>
-                      <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">Real-time Node Density</p>
+                      <h3 className="text-2xl font-black uppercase tracking-tight">{t.admin_master.distribution}</h3>
+                      <p className="text-white/40 text-xs font-bold uppercase tracking-widest mt-1">{t.admin_master.density}</p>
                     </div>
                     <BarChart3 className="text-[#D6825C]" size={24} />
                   </div>
@@ -141,13 +141,13 @@ const AdminPage: React.FC = () => {
                     {chartValues.map((val, i) => (
                       <div key={i} className="flex-1 flex flex-col items-center">
                          <motion.div initial={{ height: 0 }} animate={{ height: val.h }} className={`w-full bg-gradient-to-t ${val.color} rounded-t-2xl`} />
-                         <span className="text-[8px] font-black mt-4 uppercase tracking-widest opacity-30">{['Talent', 'Corp', 'Capital', 'System'][i]}</span>
+                         <span className="text-[8px] font-black mt-4 uppercase tracking-widest opacity-30">{val.label}</span>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="bg-white rounded-[3.5rem] p-12 border border-slate-100 shadow-sm">
-                   <h3 className="text-xl font-black text-[#1a2e26] uppercase tracking-tight mb-8 flex items-center"><Terminal size={18} className="mr-3 text-[#D6825C]" /> Real Protocol Stream</h3>
+                   <h3 className="text-xl font-black text-[#1a2e26] uppercase tracking-tight mb-8 flex items-center"><Terminal size={18} className="mr-3 text-[#D6825C]" /> {t.admin_master.logs}</h3>
                    <div className="space-y-6">
                       {unifiedLogs.length > 0 ? unifiedLogs.map((log, i) => (
                         <div key={i} className="flex items-start justify-between group">
@@ -157,7 +157,7 @@ const AdminPage: React.FC = () => {
                           </div>
                           <span className="text-[8px] font-black text-slate-200 uppercase whitespace-nowrap">{log.time}</span>
                         </div>
-                      )) : <p className="text-xs font-bold text-slate-200 uppercase tracking-widest text-center py-10">Waiting for nexus events...</p>}
+                      )) : <p className="text-xs font-bold text-slate-200 uppercase tracking-widest text-center py-10">{t.admin_master.waiting_events}</p>}
                    </div>
                 </div>
               </div>
@@ -166,7 +166,7 @@ const AdminPage: React.FC = () => {
 
           {activeTab === 'talents' && (
             <motion.div key="talents" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h3 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tight">Talent Registry ({ecosystemUsers.length})</h3>
+              <h3 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tight">{t.admin_master.registry_talents} ({ecosystemUsers.length})</h3>
               <div className="bg-white rounded-[3.5rem] border border-slate-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left">
                   <thead className="bg-slate-50/50">
@@ -189,7 +189,7 @@ const AdminPage: React.FC = () => {
 
           {activeTab === 'companies' && (
             <motion.div key="companies" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h3 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tight">Corporate Registry ({allJobs.length})</h3>
+              <h3 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tight">{t.admin_master.registry_corp} ({allJobs.length})</h3>
               <div className="grid gap-6">
                 {allJobs.map((job) => (
                   <div key={job.id} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between group">
@@ -206,7 +206,7 @@ const AdminPage: React.FC = () => {
                     </div>
                     <div className="flex items-center space-x-3">
                        {job.status === 'Pending' && (
-                         <button onClick={() => moderateJob(job.id, 'Approved')} className="bg-green-500 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/20 active:scale-95 transition-all">Authorize</button>
+                         <button onClick={() => moderateJob(job.id, 'Approved')} className="bg-green-500 text-white px-6 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest shadow-lg shadow-green-500/20 active:scale-95 transition-all">{t.admin.approve}</button>
                        )}
                        <button onClick={() => deleteJob(job.id)} className="p-4 bg-red-50 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all"><Trash2 size={18} /></button>
                     </div>
@@ -219,7 +219,7 @@ const AdminPage: React.FC = () => {
 
           {activeTab === 'investors' && (
             <motion.div key="investors" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h3 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tight">Capital Registry ({investors.length})</h3>
+              <h3 className="text-3xl font-black text-[#1a2e26] uppercase tracking-tight">{t.admin_master.registry_capital} ({investors.length})</h3>
               <div className="grid md:grid-cols-2 gap-8">
                 {investors.map((inv) => (
                   <div key={inv.id} className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
@@ -242,7 +242,7 @@ const AdminPage: React.FC = () => {
                     <div className="flex items-center gap-3 border-t border-slate-50 pt-8">
                        <a href={inv.website} target="_blank" className="flex-1 py-3 bg-slate-50 text-[#1a2e26] rounded-xl font-black text-[10px] uppercase tracking-widest text-center hover:bg-slate-100 transition-all flex items-center justify-center"><Globe size={14} className="mr-2" /> HQ Website</a>
                        {inv.status === 'Pending' && (
-                         <button onClick={() => moderateInvestor(inv.id, 'Approved')} className="flex-1 py-3 bg-[#D6825C] text-white rounded-xl font-black text-[10px] uppercase tracking-widest text-center shadow-lg shadow-[#D6825C]/20 active:scale-95 transition-all">Authorize Fund</button>
+                         <button onClick={() => moderateInvestor(inv.id, 'Approved')} className="flex-1 py-3 bg-[#D6825C] text-white rounded-xl font-black text-[10px] uppercase tracking-widest text-center shadow-lg shadow-[#D6825C]/20 active:scale-95 transition-all">{t.admin.approve}</button>
                        )}
                        <button onClick={() => deleteInvestor(inv.id)} className="p-3 bg-red-50 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all"><Trash2 size={16} /></button>
                     </div>
@@ -257,14 +257,14 @@ const AdminPage: React.FC = () => {
             <motion.div key="system" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-4xl mx-auto space-y-12">
                <div className="bg-[#1a2e26] rounded-[3.5rem] p-16 text-white shadow-2xl relative overflow-hidden text-center">
                   <div className="w-24 h-24 bg-red-500/20 text-red-500 rounded-full flex items-center justify-center mx-auto mb-10 border border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.3)]"><AlertTriangle size={48} /></div>
-                  <h3 className="text-5xl font-black uppercase tracking-tighter mb-6">Emergency Purge</h3>
-                  <p className="text-white/40 text-xl font-medium max-w-xl mx-auto mb-16 leading-relaxed">Instantly wipe all non-critical nodes, market entries, and capital hubs. IRREVERSIBLE.</p>
+                  <h3 className="text-5xl font-black uppercase tracking-tighter mb-6">{t.admin_master.emergency_purge}</h3>
+                  <p className="text-white/40 text-xl font-medium max-w-xl mx-auto mb-16 leading-relaxed">{t.admin_master.purge_desc}</p>
                   {!isConfirmingNuke ? (
-                    <button onClick={() => setIsConfirmingNuke(true)} className="bg-red-600 hover:bg-red-700 text-white px-16 py-6 rounded-full font-black text-xs uppercase tracking-[0.3em] transition-all active:scale-95">Initialize System Reset</button>
+                    <button onClick={() => setIsConfirmingNuke(true)} className="bg-red-600 hover:bg-red-700 text-white px-16 py-6 rounded-full font-black text-xs uppercase tracking-[0.3em] transition-all active:scale-95">{t.admin_master.init_reset}</button>
                   ) : (
                     <div className="flex justify-center space-x-6">
-                      <button onClick={handleNuke} className="bg-red-600 text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl">Confirm Nuke</button>
-                      <button onClick={() => setIsConfirmingNuke(false)} className="text-white/40 hover:text-white font-black uppercase text-xs tracking-widest">Abort</button>
+                      <button onClick={handleNuke} className="bg-red-600 text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-widest shadow-2xl">{t.admin_master.confirm_nuke}</button>
+                      <button onClick={() => setIsConfirmingNuke(false)} className="text-white/40 hover:text-white font-black uppercase text-xs tracking-widest">{t.admin_master.abort}</button>
                     </div>
                   )}
                </div>
@@ -275,7 +275,7 @@ const AdminPage: React.FC = () => {
         {nuked && (
           <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 50 }} className="fixed bottom-12 right-12 bg-[#1a2e26] text-white px-10 py-5 rounded-full font-black text-xs uppercase tracking-widest shadow-2xl flex items-center space-x-3 z-[100] border border-white/10">
             <Zap className="text-[#D6825C]" size={20} fill="currentColor" />
-            <span>Protocol Reset Successful • All Nodes Cleared</span>
+            <span>{t.admin_master.reset_success}</span>
           </motion.div>
         )}
       </main>
