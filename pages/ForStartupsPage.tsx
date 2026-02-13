@@ -68,51 +68,6 @@ const ForStartupsPage: React.FC = () => {
               <span>{t.navigation.signup}</span>
             </button>
           </motion.div>
-          
-          <div className="mt-12 text-[10px] font-black uppercase tracking-[0.4em] text-[#1A2E26]/20">
-            VELIX Protocol • Based in Copenhagen
-          </div>
-        </section>
-
-        <section className="grid md:grid-cols-3 gap-8 mb-32">
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="p-12 bg-white rounded-xl border border-[#2D5A4C]/5 shadow-sm group hover:shadow-xl transition-all"
-          >
-            <div className="w-20 h-20 bg-[#2D5A4C]/5 text-[#2D5A4C] rounded-xl flex items-center justify-center mb-8 group-hover:bg-[#2D5A4C] group-hover:text-white transition-all duration-500">
-              <Users size={36} />
-            </div>
-            <h3 className="text-2xl font-bold text-[#1A2E26] mb-4">{language === 'en' ? 'Reach 500k+ candidates' : 'Nå 500k+ kandidater'}</h3>
-            <p className="text-[#1A2E26]/60 font-medium leading-relaxed">
-              {language === 'en' ? 'Your job posts are seen by top-tier talent across the European ecosystem.' : 'Dine jobopslag ses af top-talenter i hele Europa.'}
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="p-12 bg-white rounded-xl border border-[#2D5A4C]/5 shadow-sm group hover:shadow-xl transition-all"
-          >
-            <div className="w-20 h-20 bg-[#2D5A4C]/5 text-[#2D5A4C] rounded-xl flex items-center justify-center mb-8 group-hover:bg-[#2D5A4C] group-hover:text-white transition-all duration-500">
-              <Layout size={36} />
-            </div>
-            <h3 className="text-2xl font-bold text-[#1A2E26] mb-4">{language === 'en' ? 'Advanced ATS' : 'Avanceret ATS'}</h3>
-            <p className="text-[#1A2E26]/60 font-medium leading-relaxed">
-              {language === 'en' ? 'Manage your entire recruitment pipeline with our professional protocol.' : 'Administrer hele din rekrutteringsproces med vores system.'}
-            </p>
-          </motion.div>
-          
-          <motion.div 
-            whileHover={{ y: -5 }}
-            className="p-12 bg-white rounded-xl border border-[#2D5A4C]/5 shadow-sm group hover:shadow-xl transition-all"
-          >
-            <div className="w-20 h-20 bg-[#2D5A4C]/5 text-[#2D5A4C] rounded-xl flex items-center justify-center mb-8 group-hover:bg-[#2D5A4C] group-hover:text-white transition-all duration-500">
-              <Palette size={36} />
-            </div>
-            <h3 className="text-2xl font-bold text-[#1A2E26] mb-4">{language === 'en' ? 'Custom Branding' : 'Custom Branding'}</h3>
-            <p className="text-[#1A2E26]/60 font-medium leading-relaxed">
-              {language === 'en' ? 'Showcase your company culture with beautiful, personalized profiles.' : 'Vis din virksomhedskultur frem med personlige profiler.'}
-            </p>
-          </motion.div>
         </section>
 
         <section id="pricing" className="max-w-4xl mx-auto mb-32">
@@ -134,16 +89,7 @@ const ForStartupsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-x-12 gap-y-6 mb-12">
-                {t.pricing.features.map((feature: string) => (
-                  <div key={feature} className="flex items-center space-x-4">
-                    <div className="w-6 h-6 bg-[#2D5A4C] rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="text-white" size={14} />
-                    </div>
-                    <span className="font-bold text-[#1A2E26]/80">{feature}</span>
-                  </div>
-                ))}
-              </div>
+              {/* Removed feature rows */}
 
               <button 
                 onClick={() => navigate('/pricing')}

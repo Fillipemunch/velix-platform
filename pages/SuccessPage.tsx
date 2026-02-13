@@ -48,7 +48,7 @@ const SuccessPage: React.FC = () => {
         </button>
       </div>
 
-      {/* Mock Email Preview - Simplified per user request */}
+      {/* Mock Email Preview - Clean Welcome Only */}
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -62,20 +62,24 @@ const SuccessPage: React.FC = () => {
             <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
           </div>
           <div className="flex-1 text-center">
-            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Confirmation Email</span>
+            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Confirmation Protocol</span>
           </div>
         </div>
         
         <div className="p-8 md:p-12 text-left">
           <div className="flex justify-between items-center mb-10 pb-6 border-b border-gray-100">
             <Logo size="sm" />
-            <div className="text-[10px] font-black text-[#2D5A4C] bg-[#2D5A4C]/5 px-3 py-1 rounded-full uppercase tracking-widest">Receipt Confirmed</div>
+            <div className="text-[10px] font-black text-[#2D5A4C] bg-[#2D5A4C]/5 px-3 py-1 rounded-full uppercase tracking-widest">Signal Locked</div>
           </div>
           
           <div className="space-y-6">
             <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest">{t.email_confirmation.subject}</h3>
             <p className="text-2xl font-black text-[#1A2E26]">{t.email_confirmation.greeting}</p>
             <p className="text-gray-600 font-medium leading-relaxed text-lg">{t.email_confirmation.body}</p>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-gray-50">
+             <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">VELIX CORE ARCHITECT • 2026</p>
           </div>
         </div>
       </motion.div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldCheck, Lock, CreditCard, CheckCircle2, Loader2, Zap, Globe } from 'lucide-react';
@@ -23,9 +22,6 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
     secure_label: 'Secure',
     summary_title: 'Order Summary',
     subtitle: 'Processing via Velix Protocol',
-    feature1: 'Verified Listing',
-    feature2: 'Advanced Analytics',
-    feature3: 'Priority Signal',
     total_label: 'Total',
     powered_by: 'VELIX 2026',
     pay_btn: 'Authorize Payment',
@@ -89,17 +85,6 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
                 <p className="text-white/50 mb-10 font-medium text-lg leading-relaxed">
                   {checkoutText.subtitle}
                 </p>
-
-                <ul className="space-y-6">
-                  {[checkoutText.feature1, checkoutText.feature2, checkoutText.feature3].map((f, i) => (
-                    <li key={i} className="flex items-center space-x-4">
-                      <div className="w-6 h-6 bg-[#D6825C] rounded-full flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 size={14} className="text-white" />
-                      </div>
-                      <span className="font-bold text-white/80">{f}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               <div className="mt-16 pt-10 border-t border-white/5 relative z-10">

@@ -81,16 +81,7 @@ const PricingPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-6 mb-12">
-                {pricingData.features.map((feature: string) => (
-                  <div key={feature} className="flex items-center space-x-5">
-                    <div className="w-6 h-6 rounded-full bg-[#1a2e26]/5 flex items-center justify-center border border-[#1a2e26]/10 flex-shrink-0">
-                      <Check size={14} className="text-[#1a2e26]" />
-                    </div>
-                    <span className="text-[#0A1128]/80 font-bold text-lg">{feature}</span>
-                  </div>
-                ))}
-              </div>
+              {/* Removed feature list rendering */}
 
               <button 
                 onClick={handleSubscribe}

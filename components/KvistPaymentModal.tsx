@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShieldCheck, Lock, CreditCard, CheckCircle2, Loader2 } from 'lucide-react';
@@ -69,17 +68,6 @@ const KvistPaymentModal: React.FC<KvistPaymentModalProps> = ({ isOpen, onClose, 
                 <p className="text-white/50 mb-10 font-medium text-lg">
                   {t.checkout.subtitle}
                 </p>
-
-                <ul className="space-y-6">
-                  {[t.checkout.feature1, t.checkout.feature2, t.checkout.feature3].map((f, i) => (
-                    <li key={i} className="flex items-center space-x-4">
-                      <div className="w-6 h-6 bg-[#2D5A4C] rounded-full flex items-center justify-center flex-shrink-0">
-                        <CheckCircle2 size={14} className="text-white" />
-                      </div>
-                      <span className="font-bold text-white/80">{f}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               <div className="mt-16 pt-10 border-t border-white/5 relative z-10">

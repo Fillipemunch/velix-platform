@@ -18,13 +18,7 @@ export const translations = {
       price: "FREE",
       period: "forever",
       cta: "Activate Console",
-      features: [
-        "Infinite Market Entries",
-        "Full Protocol Database Access",
-        "Priority Candidate Intelligence",
-        "Custom Command Center",
-        "Direct Bridge Protocol (Beta)"
-      ]
+      features: []
     },
     admin: {
       title: "VELIX Protocol Console",
@@ -95,9 +89,9 @@ export const translations = {
       title: "Confirm Entry",
       subtitle: "Ready to broadcast your mission to the ecosystem.",
       summary_title: "Protocol Broadcast",
-      feature1: "Deep Talent Analytics",
-      feature2: "Infinite Ecosystem Posts",
-      feature3: "Priority Protocol Placement",
+      feature1: "",
+      feature2: "",
+      feature3: "",
       total_label: "Protocol Fee",
       secure_label: "Free Transmission",
       cardholder: "Account Holder",
@@ -347,13 +341,7 @@ export const translations = {
       price: "GRATIS",
       period: "altid",
       cta: "Aktiver Konsol",
-      features: [
-        "Uendelige Markedsadgange",
-        "Fuld Protokol Database Adgang",
-        "Prioriteret Kandidat Intelligence",
-        "Brugerdefineret Kommandocenter",
-        "Direkte Bro Protokol (Beta)"
-      ]
+      features: []
     },
     admin: {
       title: "VELIX Protokol Konsol",
@@ -408,7 +396,7 @@ export const translations = {
       success_title: "Indsendelse Modtaget",
       success_msg: "Din fondsprofil er i øjeblikket i vurderingskøen. Forvent en statusopdatering inden for 24 timer.",
       cta_funding: "Se Kapitalkort",
-      free_trial_badge: "✓ SUBSIDIERET AF VELIX PROTOKOL"
+      free_trial_badge: "✓ SUBSIDIERET AF VELIX PROTOCOL"
     },
     paywall: {
       title: "Skaler over grænserne",
@@ -424,9 +412,9 @@ export const translations = {
       title: "Confirm Entry",
       subtitle: "Klar til at sende din mission ud i økosystemet.",
       summary_title: "Protokol Broadcast",
-      feature1: "Dybdegående Talent-analyse",
-      feature2: "Uendelige Økosystem-opslag",
-      feature3: "Prioriteret Protokol-placering",
+      feature1: "",
+      feature2: "",
+      feature3: "",
       total_label: "Protokol Gebyr",
       secure_label: "Gratis Transmission",
       cardholder: "Kontoholder",
@@ -449,7 +437,7 @@ export const translations = {
       profile_name: "Enhedsnavn",
       profile_email: "Verificeret E-mail",
       profile_bio: "Kernemission",
-      billing_header: "Adgangsstyring",
+      billing_header: "Access Management",
       plan_active: "Status",
       plan_premium: "Aktiv Protokol Node",
       plan_free: "Standard Adgang",
