@@ -533,7 +533,7 @@ export const translations = {
     about: {
       title: "Protokollen",
       subtitle: "Velix-filosofien",
-      description: "Velix er infrastrukturlaget for innovation, baseret i København. Vi opererer i centrum af det europæiske startup-landskab for at fjerne friktionen mellem hurtigtvoksende startups og elite-talent.",
+      description: "Velix is the infrastructure layer for innovation, based in Copenhagen. We operate at the center of the European startup landscape to remove the friction between high-speed startups and elite talent.",
       manifestoTitle: "Velix-manifestet",
       pillar1Title: "Hastighed",
       pillar1Text: "Rekruttering og finansiering skal bevæge sig med tankens hastighed. Vi bygger skinnerne.",
@@ -584,7 +584,7 @@ export const translations = {
       cv: "Karrierehistorik (PDF)",
       submit: "Indsend til Protokol",
       success: "Data Synkroniseret",
-      successMsg: "Dine oplysninger er blevet sendt sikkert til startuppens kommandocenter."
+      successMsg: "Dine oplysninger er blevet sendã sikkert til startuppens kommandocenter."
     },
     back_button: "Tilbage",
     location_label: "Node",
@@ -649,7 +649,7 @@ export const translations = {
         EdTech: "Vidensystemer",
         Logistics: "Forsyningskæde"
       },
-      company_values: ["Innovation", "Modstandskraft", "Gennemsigtighed", "Hastighed", "Fokus"]
+      company_values: ["Innovation", "Resilience", "Transparency", "Velocity", "Focus"]
     },
     talent_explorer: {
       title: "Talentprotokol",

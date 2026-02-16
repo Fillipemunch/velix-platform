@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShieldCheck, Lock, CreditCard, CheckCircle2, Loader2, Zap, Globe } from 'lucide-react';
+import { X, ShieldCheck, Lock, Loader2, Zap, Globe } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-
-// Stripe Integration Keys
-const STRIPE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || 'pk_live_51Lr55EEzvJolWBuXRJuEsjXEXUQNXFeVKYIlW5anghgDxG44l1P8qXIUFQu8rHoEijjcfTzwuD0jvAGG91ALZNLB00YAthJx0g';
 
 interface VelixPaymentModalProps {
   isOpen: boolean;
@@ -14,10 +11,9 @@ interface VelixPaymentModalProps {
 }
 
 const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, onPaymentSuccess, entityCvr = '' }) => {
-  const { t, getCheckoutPrice, language } = useApp();
+  const { t, language } = useApp();
   const [processing, setProcessing] = useState(false);
   
-  // Safety check for translations
   const checkoutText = t.checkout || {
     secure_label: 'Secure',
     summary_title: 'Order Summary',
@@ -28,16 +24,11 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
     processing: 'Syncing...'
   };
 
-  const pricing = getCheckoutPrice(entityCvr) || { amount: 54, currency: 'eur' };
-  const displayPrice = pricing.currency === 'dkk' ? '400 DKK' : '€54.00';
-
   const handleStripeCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     setProcessing(true);
 
     try {
-      // In production, this would initialize a Stripe Checkout Session
-      console.log(`[Stripe Bridge] Initiating session for ${pricing.amount} ${pricing.currency.toUpperCase()}`);
       await new Promise(resolve => setTimeout(resolve, 2000));
       onPaymentSuccess();
       setProcessing(false);
@@ -69,7 +60,6 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
               <X size={24} />
             </button>
 
-            {/* Left Side: Order Summary */}
             <div className="md:w-1/2 bg-[#1a2e26] p-10 md:p-16 text-white flex flex-col justify-between relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/5 to-transparent pointer-events-none" />
               
@@ -92,13 +82,12 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
                   {checkoutText.total_label}
                 </span>
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-5xl font-black tracking-tighter">{displayPrice}</span>
+                  <span className="text-5xl font-black tracking-tighter">SUBSIDIZED</span>
                   <span className="text-white/30 font-bold uppercase text-xs">/ ONE-TIME</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Side: Action */}
             <div className="md:w-1/2 p-10 md:p-16 bg-white flex flex-col justify-center">
               <div className="text-center mb-12">
                 <div className="w-20 h-20 bg-slate-50 rounded-3xl flex items-center justify-center mx-auto mb-6 text-[#1a2e26]/20 border border-[#1a2e26]/5">
@@ -106,7 +95,7 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
                 </div>
                 <h3 className="text-2xl font-black text-[#1a2e26] tracking-tight mb-2 uppercase">Secure Node Link</h3>
                 <p className="text-sm text-[#1a2e26]/40 font-medium px-4">
-                  Authenticated redirect to the Stripe Secure Bridge. The protocol will auto-detect your region ({pricing.currency.toUpperCase()}).
+                  Authenticated entry into the VELIX ecosystem. This process is currently free of cost for verified startups.
                 </p>
               </div>
 
@@ -126,7 +115,7 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
                   </>
                 ) : (
                   <>
-                    <span>Proceed to Stripe</span>
+                    <span>{checkoutText.pay_btn}</span>
                   </>
                 )}
               </button>
@@ -134,7 +123,7 @@ const VelixPaymentModal: React.FC<VelixPaymentModalProps> = ({ isOpen, onClose, 
               <div className="mt-10 flex flex-col items-center space-y-4">
                 <div className="flex items-center space-x-3 text-[10px] font-black text-[#1a2e26]/30 uppercase tracking-[0.2em]">
                    <Globe size={12} className="text-[#D6825C]" />
-                   <span>Automatic Locale: {language === 'da' ? 'Danish' : 'English'}</span>
+                   <span>Automatic Locale Enabled</span>
                 </div>
                 <p className="text-[9px] text-[#1a2e26]/20 uppercase tracking-widest font-bold text-center">
                   {checkoutText.powered_by}

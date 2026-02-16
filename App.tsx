@@ -43,7 +43,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="text-[#1a2e26]/40 text-[10px] font-bold tracking-[0.2em] text-center uppercase">
-          Based in Copenhagen, Denmark | <a href="mailto:velixcopenhagen@gmail.com" className="hover:text-[#D6825C] transition-colors">velixcopenhagen@gmail.com</a>
+          Based in Copenhagen, Denmark
         </div>
         
         <div className="flex items-center space-x-2 text-[10px] font-black text-[#1a2e26]/10 uppercase tracking-[0.5em]">

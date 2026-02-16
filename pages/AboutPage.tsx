@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Award, Zap, Shield, TrendingUp, Linkedin, MapPin } from 'lucide-react';
+import { ArrowLeft, Zap, Shield, TrendingUp, Linkedin, MapPin, Crown } from 'lucide-react';
 
 const AboutPage: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -14,9 +14,10 @@ const AboutPage: React.FC = () => {
   if (!mounted || !appContext) return null;
   const { t } = appContext;
 
-  // Foto real do fundador integrada. 
-  const founderImage = "https://replicate.delivery/xped/01dfa151-5127-4648-912c-39655519842c/output.png"; 
-
+  const linkedinUrl = "https://www.linkedin.com/in/fillipe-ferreira-munch-317a75396/";
+  // Forced absolute path with encoded space for the public folder
+  const founderImageUrl = "/IMG_6411%20Lille.png";
+  
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -78,76 +79,61 @@ const AboutPage: React.FC = () => {
           </div>
         </section>
 
-        {/* Founder Card Section - REFINED FIX */}
-        <section className="mb-40 flex justify-center py-12">
+        {/* Founder Section - No Text Fallback */}
+        <section className="mb-40 py-12">
           <motion.div 
             initial={{ y: 40, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
-            className="max-w-lg w-full bg-white rounded-[4.5rem] shadow-[0_40px_100px_-20px_rgba(26,46,38,0.12)] border border-white p-16 text-center relative overflow-hidden transform transition-all hover:shadow-[0_60px_120px_-20px_rgba(26,46,38,0.18)]"
+            className="max-w-5xl mx-auto"
           >
-            {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#F9FBF9]/80 to-white pointer-events-none" />
-
-            <div className="relative z-10 flex flex-col items-center">
-              {/* Profile Image - RECORTE CIRCULAR E CENTRALIZAÇÃO CORRIGIDA */}
-              <div className="relative w-64 h-64 md:w-80 md:h-80 mx-auto mb-12 group">
-                <div className="w-full h-full rounded-full overflow-hidden border-[10px] border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] bg-slate-100 relative z-10 ring-1 ring-[#1a2e26]/5">
+            <div className="bg-[#1a2e26] rounded-[3.5rem] p-12 md:p-24 shadow-[0_60px_120px_-20px_rgba(26,46,38,0.3)] flex flex-col md:flex-row items-center gap-16 md:gap-24 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl pointer-events-none" />
+              
+              {/* Portrait Node - Exclusive Image Render */}
+              <div className="relative shrink-0 z-10">
+                <div className="w-64 h-64 md:w-80 md:h-80 rounded-[3.5rem] overflow-hidden border-[12px] border-white/10 shadow-2xl relative bg-black/10 ring-1 ring-white/20">
                   <img 
-                    src={founderImage} 
-                    alt={t.about.founderName} 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110 block"
-                    style={{ objectPosition: 'center 5%' }}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://via.placeholder.com/600x600/1a2e26/D6825C?text=FM";
-                    }}
+                    src={founderImageUrl} 
+                    alt="Fillipe Munch - Founder"
+                    className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
+                    loading="eager"
                   />
                 </div>
-                
-                {/* Medal Icon - POSICIONADO NO CANTO INFERIOR DIREITO SEM OBSTRUIR */}
-                <div className="absolute bottom-6 right-6 w-16 h-16 bg-[#D6825C] text-white rounded-[1.5rem] flex items-center justify-center shadow-[0_20px_40px_rgba(214,130,92,0.5)] border-4 border-white z-20 transition-all group-hover:rotate-12 group-hover:scale-110">
-                  <Award size={28} />
+                <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-[#D6825C] rounded-[2rem] flex items-center justify-center z-20 shadow-2xl border-8 border-[#1a2e26] group hover:scale-110 transition-transform">
+                  <Crown size={32} className="text-white" />
                 </div>
               </div>
 
-              {/* Títulos e Nomes */}
-              <div className="space-y-3 mb-10">
-                <h3 className="text-[#D6825C] font-black text-[10px] uppercase tracking-[0.5em] mb-2">
-                  {t.about.founderRole}
-                </h3>
-                <h2 className="text-[#1a2e26] text-6xl font-black tracking-tighter uppercase leading-tight">
-                  {t.about.founderName}
-                </h2>
-              </div>
-              
-              <div className="w-24 h-1.5 bg-[#D6825C] mx-auto mb-10 rounded-full" />
-              
-              <div className="px-8 mb-16">
-                <p className="text-[#1a2e26]/70 leading-relaxed text-xl italic font-medium">
-                  "{t.about.founderBio}"
-                </p>
-              </div>
-              
-              <div className="pt-12 border-t border-[#1a2e26]/5 w-full space-y-8">
-                <div className="flex flex-col items-center gap-6">
+              {/* Identity Matrix */}
+              <div className="flex-1 text-center md:text-left space-y-10 z-10">
+                <div>
+                  <div className="inline-flex items-center space-x-2 px-4 py-1.5 bg-[#D6825C]/20 text-[#D6825C] text-[10px] font-black uppercase tracking-[0.4em] rounded-full mb-6 border border-[#D6825C]/30">
+                    <Zap size={12} fill="currentColor" />
+                    <span>Founder & Core Architect</span>
+                  </div>
+                  <h2 className="text-6xl md:text-9xl font-black text-white tracking-tighter uppercase leading-[0.8]">
+                    Fillipe <br /> <span className="text-[#D6825C]">Munch</span>
+                  </h2>
+                </div>
+
+                <div className="space-y-4">
+                   <p className="text-2xl md:text-3xl text-white/80 font-medium leading-relaxed italic max-w-xl">
+                    "{t.about.founderBio}"
+                  </p>
+                  <p className="text-white/40 font-black uppercase tracking-[0.4em] text-[10px]">Strategic Vision Lead • 2026</p>
+                </div>
+
+                <div className="flex flex-col md:flex-row items-center gap-8 pt-4">
                   <a 
-                    href="https://linkedin.com" 
+                    href={linkedinUrl} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="inline-flex items-center space-x-4 bg-[#1a2e26] text-white px-12 py-5 rounded-full font-black text-xs uppercase tracking-widest hover:bg-[#D6825C] transition-all shadow-2xl active:scale-95 group"
+                    className="w-full md:w-auto bg-white text-[#1a2e26] px-12 py-6 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-[#D6825C] hover:text-white transition-all shadow-2xl flex items-center justify-center space-x-3 active:scale-95 group"
                   >
-                    <Linkedin size={20} className="group-hover:scale-110 transition-transform" />
-                    <span>Executive Profile</span>
+                    <Linkedin size={18} className="group-hover:scale-110 transition-transform" />
+                    <span>Synchronize Network</span>
                   </a>
-                  
-                  <div className="flex items-center text-slate-400 text-[10px] font-black uppercase tracking-[0.4em]">
-                    <MapPin size={14} className="mr-3 text-[#D6825C]" />
-                    Copenhagen Hub • DK
-                  </div>
-                </div>
-                
-                <div className="pt-4">
-                  <span className="text-slate-200 font-mono text-[9px] tracking-[0.6em] uppercase font-black">VELIX CORE ARCHITECT • 2026</span>
                 </div>
               </div>
             </div>

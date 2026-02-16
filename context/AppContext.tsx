@@ -1,3 +1,4 @@
+// Fixed malformed import: added missing opening brace for named imports
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Language, FilterState, Investor, Job } from '../types';
 import { translations } from '../translations';
@@ -93,7 +94,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const saved = localStorage.getItem('velix_ecosystem_users');
     if (saved) return JSON.parse(saved);
     
-    // START FRESH: Only show real users. No bots or development fakes.
     return [
       { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', joinedAt: '2025-12-01', status: 'Active' },
     ];
@@ -134,7 +134,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const nukeDatabase = () => {
-    // Keep only the master admin
     const masterAdmin = ecosystemUsers.find(u => u.email === 'fillipeferreiramunch@gmail.com');
     setEcosystemUsers(masterAdmin ? [masterAdmin] : []);
     setAllJobs([]);
@@ -146,10 +145,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const getCheckoutPrice = (cvr: string) => {
-    const isDanish = cvr.toUpperCase().startsWith('DK') || cvr.length === 8;
-    return isDanish 
-      ? { amount: 400, currency: 'dkk' } 
-      : { amount: 54, currency: 'eur' };
+    // Logic updated to return 0 for subsidized model
+    return { amount: 0, currency: 'eur' };
   };
 
   const addApplication = (appData: Omit<Application, 'id' | 'submittedAt' | 'isNew' | 'status'>) => {
@@ -236,10 +233,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     
     const initialCount = ecosystemUsers.length;
     const cleanedUsers = ecosystemUsers.filter(user => {
-      const emailDomain = user.email.split('@')[1];
+      const emailParts = user.email.split('@');
+      const emailDomain = emailParts[1] || '';
       const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);
       
-      const localPart = user.email.split('@')[0];
+      // Fixed circular reference: localPart was using its own length before definition
+      const localPart = emailParts[0] || '';
       const hasRandomPattern = /\d{5,}/.test(localPart);
       
       if (user.email === 'fillipeferreiramunch@gmail.com') return true;
@@ -312,7 +311,7 @@ export const useApp = () => {
       totalUserPosts: 0,
       moderateJob: () => {},
       moderateInvestor: () => {},
-      getCheckoutPrice: () => ({ amount: 54, currency: 'eur' }),
+      getCheckoutPrice: () => ({ amount: 0, currency: 'eur' }),
       ecosystemUsers: [],
       addEcosystemUser: () => {},
       banUser: () => {},

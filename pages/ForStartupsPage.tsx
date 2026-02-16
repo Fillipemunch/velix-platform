@@ -39,15 +39,6 @@ const ForStartupsPage: React.FC = () => {
             {language === 'en' ? 'Scale your team with the best European talent' : 'Skaler dit team med de bedste talenter i Europa'}
           </motion.h1>
           
-          <motion.p 
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1 }}
-            className="text-xl md:text-2xl text-[#1A2E26]/60 mb-16 max-w-3xl mx-auto leading-relaxed font-medium"
-          >
-            {language === 'en' ? 'Join 2,000+ European startups using VELIX to hire faster and smarter.' : 'Slut dig til 2.000+ europæiske startups, der bruger VELIX til at ansætte hurtigere.'}
-          </motion.p>
-          
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -88,8 +79,6 @@ const ForStartupsPage: React.FC = () => {
                   <span className="text-xs font-bold text-[#1A2E26]/40 uppercase tracking-widest">{t.pricing.period}</span>
                 </div>
               </div>
-
-              {/* Removed feature rows */}
 
               <button 
                 onClick={() => navigate('/pricing')}
