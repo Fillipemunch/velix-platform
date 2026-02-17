@@ -22,7 +22,8 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, role?: 'startup' | 'talent', name?: string) => void;
+  login: (email: string) => boolean;
+  register: (name: string, email: string, role?: 'startup' | 'talent') => void;
   logout: () => void;
   subscribe: () => void;
   updateProfileImage: (image: string) => void;
@@ -37,7 +38,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
 
-  // Carrega a sessão ativa e o registro global de usuários
+  // Inicialização: Tenta recuperar a sessão ativa
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('velix_user');
@@ -49,39 +50,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
-  // Helper para atualizar o banco de dados global de usuários (persistência entre logins)
-  const syncToGlobalRegistry = (userData: User) => {
+  // Helper para ler o registro global (nosso "Banco de Dados")
+  const getGlobalRegistry = (): Record<string, User> => {
     try {
       const registryRaw = localStorage.getItem('velix_global_registry');
-      const registry: Record<string, User> = registryRaw ? JSON.parse(registryRaw) : {};
-      registry[userData.email.toLowerCase()] = userData;
-      localStorage.setItem('velix_global_registry', JSON.stringify(registry));
+      return registryRaw ? JSON.parse(registryRaw) : {};
     } catch (e) {
-      console.error("Registry sync error", e);
+      return {};
     }
   };
 
-  const login = (email: string, role: 'startup' | 'talent' = 'startup', name?: string) => {
-    if (!email) return;
+  // Helper para salvar no registro global
+  const saveToGlobalRegistry = (userData: User) => {
+    const registry = getGlobalRegistry();
+    registry[userData.email.toLowerCase()] = userData;
+    localStorage.setItem('velix_global_registry', JSON.stringify(registry));
+  };
+
+  const register = (name: string, email: string, role: 'startup' | 'talent' = 'startup') => {
     const cleanEmail = email.toLowerCase();
     const isAdmin = cleanEmail === 'fillipeferreiramunch@gmail.com';
     
-    // 1. Tentar recuperar perfil existente do registro global
-    const registryRaw = localStorage.getItem('velix_global_registry');
-    const registry: Record<string, User> = registryRaw ? JSON.parse(registryRaw) : {};
-    const existingProfile = registry[cleanEmail];
-
-    if (existingProfile) {
-      // Se o usuário já existe, carrega os dados salvos dele
-      setUser(existingProfile);
-      localStorage.setItem('velix_user', JSON.stringify(existingProfile));
-      return;
-    }
-
-    // 2. Se for um usuário novo, cria o perfil inicial
-    const userData: User = { 
+    const newUser: User = { 
       email: cleanEmail, 
-      name: name || cleanEmail.split('@')[0], 
+      name: name, 
       role: isAdmin ? 'admin' : role,
       isSubscribed: false,
       isAdmin,
@@ -96,10 +88,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         selectedValues: []
       }
     };
+
+    // Salva no "Banco de Dados" permanente do navegador
+    saveToGlobalRegistry(newUser);
     
-    setUser(userData);
-    localStorage.setItem('velix_user', JSON.stringify(userData));
-    syncToGlobalRegistry(userData);
+    // Inicia a sessão automaticamente após o registro
+    setUser(newUser);
+    localStorage.setItem('velix_user', JSON.stringify(newUser));
+  };
+
+  const login = (email: string): boolean => {
+    const cleanEmail = email.toLowerCase();
+    const registry = getGlobalRegistry();
+    const existingUser = registry[cleanEmail];
+
+    if (existingUser) {
+      setUser(existingUser);
+      localStorage.setItem('velix_user', JSON.stringify(existingUser));
+      return true;
+    }
+    
+    return false; // Login falhou - conta não existe
   };
 
   const logout = () => {
@@ -112,7 +121,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const updatedUser = { ...user, isSubscribed: true };
       setUser(updatedUser);
       localStorage.setItem('velix_user', JSON.stringify(updatedUser));
-      syncToGlobalRegistry(updatedUser);
+      saveToGlobalRegistry(updatedUser);
     }
   };
 
@@ -121,7 +130,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const updatedUser = { ...user, profileImage: image };
       setUser(updatedUser);
       localStorage.setItem('velix_user', JSON.stringify(updatedUser));
-      syncToGlobalRegistry(updatedUser);
+      saveToGlobalRegistry(updatedUser);
     }
   };
 
@@ -130,7 +139,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const updatedUser = { ...user, startupProfile: profile };
       setUser(updatedUser);
       localStorage.setItem('velix_user', JSON.stringify(updatedUser));
-      syncToGlobalRegistry(updatedUser);
+      saveToGlobalRegistry(updatedUser);
     }
   };
 
@@ -138,6 +147,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     <AuthContext.Provider value={{ 
       user, 
       login, 
+      register,
       logout, 
       subscribe,
       updateProfileImage,
@@ -154,17 +164,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    return {
-      user: null,
-      login: () => {},
-      logout: () => {},
-      subscribe: () => {},
-      updateProfileImage: () => {},
-      updateStartupProfile: () => {},
-      isAuthenticated: false,
-      isSubscribed: false,
-      isAdmin: false
-    } as any;
+    throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
 };

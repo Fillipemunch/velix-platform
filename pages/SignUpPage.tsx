@@ -8,7 +8,7 @@ import Logo from '../components/Logo';
 
 const SignUpPage: React.FC = () => {
   const { t, addEcosystemUser, syncStartupToEcosystem } = useApp();
-  const { login } = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
@@ -16,12 +16,15 @@ const SignUpPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      // 1. Registrar no diretório interno de usuários (Ecosystem)
+    if (email && name && password) {
+      // 1. Criar registro oficial no AuthContext (Banco de dados Global)
+      register(name, email, 'startup');
+
+      // 2. Registrar no diretório interno de visualização (Ecosystem)
       addEcosystemUser(name, email);
       
-      // 2. Sincronizar IMEDIATAMENTE com o ecossistema público (Landing Page)
-      const firstChar = (name && name.length > 0) ? name[0].toUpperCase() : 'S';
+      // 3. Sincronizar com o ecossistema público (Landing Page)
+      const firstChar = name[0].toUpperCase();
       syncStartupToEcosystem({
         id: email.toLowerCase(),
         name: name,
@@ -31,9 +34,6 @@ const SignUpPage: React.FC = () => {
         updatedAt: new Date().toISOString()
       });
 
-      // 3. Autenticar e Criar Registro Global (Persistence)
-      login(email, 'startup', name);
-      
       // 4. Redirecionar
       const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
       navigate(isAdmin ? '/admin/master' : '/dashboard');

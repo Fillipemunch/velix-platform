@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
-import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import Logo from '../components/Logo';
 
 const LoginPage: React.FC = () => {
@@ -13,14 +13,21 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (email && password) {
-      login(email);
-      // EXCLUSIVE REDIRECT: Master Admin goes to Master Hub, others to Dashboard
-      const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
-      navigate(isAdmin ? '/admin/master' : '/dashboard');
+      const success = login(email);
+      
+      if (success) {
+        const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
+        navigate(isAdmin ? '/admin/master' : '/dashboard');
+      } else {
+        setError("Account not found. Please register your entity first.");
+      }
     }
   };
 
@@ -32,6 +39,20 @@ const LoginPage: React.FC = () => {
           <h2 className="text-xl font-black text-[#1a2e26] mt-6 tracking-tight">{t.auth.login_title}</h2>
           <p className="text-gray-400 text-sm font-medium">{t.auth.login_subtitle}</p>
         </div>
+
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-center text-red-600 text-xs font-bold"
+            >
+              <AlertCircle size={16} className="mr-3 shrink-0" />
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
@@ -67,6 +88,7 @@ const LoginPage: React.FC = () => {
         </form>
 
         <div className="mt-10 text-center">
+          <p className="text-gray-400 text-xs font-bold mb-2">Don't have an account?</p>
           <Link to="/signup" className="text-[#D6825C] font-black text-sm hover:underline">{t.auth.signup_here}</Link>
         </div>
       </div>
