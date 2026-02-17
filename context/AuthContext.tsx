@@ -1,5 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
+interface StartupProfile {
+  slogan: string;
+  about: string;
+  website: string;
+  location: string;
+  industry: string;
+  teamSize: string;
+  selectedValues: string[];
+}
+
 interface User {
   email: string;
   name: string;
@@ -7,6 +17,7 @@ interface User {
   isSubscribed?: boolean;
   isAdmin?: boolean;
   profileImage?: string;
+  startupProfile?: StartupProfile;
 }
 
 interface AuthContextType {
@@ -15,6 +26,7 @@ interface AuthContextType {
   logout: () => void;
   subscribe: () => void;
   updateProfileImage: (image: string) => void;
+  updateStartupProfile: (profile: StartupProfile) => void;
   isAuthenticated: boolean;
   isSubscribed: boolean;
   isAdmin: boolean;
@@ -41,7 +53,16 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       role: isAdmin ? 'admin' : role,
       isSubscribed: false,
       isAdmin,
-      profileImage: isAdmin ? "/IMG_6411%20Lille.png" : undefined
+      profileImage: isAdmin ? "/IMG_6411%20Lille.png" : undefined,
+      startupProfile: {
+        slogan: '',
+        about: '',
+        website: '',
+        location: 'Hovedstaden',
+        industry: 'GreenTech',
+        teamSize: '1-10',
+        selectedValues: []
+      }
     };
     setUser(userData);
     localStorage.setItem('velix_user', JSON.stringify(userData));
@@ -68,6 +89,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateStartupProfile = (profile: StartupProfile) => {
+    if (user) {
+      const updatedUser = { ...user, startupProfile: profile };
+      setUser(updatedUser);
+      localStorage.setItem('velix_user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -75,6 +104,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       logout, 
       subscribe,
       updateProfileImage,
+      updateStartupProfile,
       isAuthenticated: !!user,
       isSubscribed: !!user?.isSubscribed,
       isAdmin: !!user?.isAdmin
@@ -93,6 +123,7 @@ export const useAuth = () => {
       logout: () => {},
       subscribe: () => {},
       updateProfileImage: () => {},
+      updateStartupProfile: () => {},
       isAuthenticated: false,
       isSubscribed: false,
       isAdmin: false

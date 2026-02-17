@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
@@ -40,9 +39,6 @@ const Header: React.FC = () => {
           </Link>
           <Link to="/funding" className={`text-sm font-bold transition-all ${isActive('/funding') ? 'text-[#D6825C]' : 'text-white/80 hover:text-white'}`}>
             {t.navigation.tab_funding}
-          </Link>
-          <Link to="/for-startups" className={`text-sm font-bold transition-all ${isActive('/for-startups') ? 'text-[#D6825C]' : 'text-white/80 hover:text-white'}`}>
-            {t.navigation.forStartups}
           </Link>
           
           <div className="flex items-center border-l border-white/10 ml-4 pl-4 space-x-4">
@@ -119,7 +115,6 @@ const Header: React.FC = () => {
           >
             <Link to="/jobs" onClick={() => setIsOpen(false)} className="text-xl font-bold text-white">{t.navigation.findJobs}</Link>
             <Link to="/funding" onClick={() => setIsOpen(false)} className="text-xl font-bold text-white">{t.navigation.tab_funding}</Link>
-            <Link to="/for-startups" onClick={() => setIsOpen(false)} className="text-xl font-bold text-white">{t.navigation.forStartups}</Link>
             <Link to="/investor-onboarding" onClick={() => setIsOpen(false)} className="text-xl font-bold text-[#D6825C]">{t.navigation.joinAsInvestor}</Link>
             
             <button onClick={toggleLanguage} className="flex items-center space-x-2 py-2 text-white font-bold">

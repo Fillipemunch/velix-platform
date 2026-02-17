@@ -1,34 +1,50 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { useAuth } from '../context/AuthContext';
 import { Camera, Globe, MapPin, Users, Target, Save, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BrandProfile: React.FC = () => {
-  const { t, language } = useApp();
-  const { user } = useAuth();
+  const { t } = useApp();
+  const { user, updateStartupProfile, updateProfileImage } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [isSaved, setIsSaved] = useState(false);
   
-  // INITIAL STATE CLEANED: Using user name if available, else empty.
   const [formData, setFormData] = useState({
     name: user?.name || '',
-    slogan: '',
-    about: '',
-    website: '',
-    location: 'Hovedstaden',
-    industry: 'GreenTech',
-    teamSize: '1-10',
-    selectedValues: [] as string[]
+    slogan: user?.startupProfile?.slogan || '',
+    about: user?.startupProfile?.about || '',
+    website: user?.startupProfile?.website || '',
+    location: user?.startupProfile?.location || 'Hovedstaden',
+    industry: user?.startupProfile?.industry || 'GreenTech',
+    teamSize: user?.startupProfile?.teamSize || '1-10',
+    selectedValues: user?.startupProfile?.selectedValues || [] as string[]
   });
+
+  // Sync internal state if user updates elsewhere (e.g. settings)
+  useEffect(() => {
+    if (user?.startupProfile) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name,
+        slogan: user.startupProfile?.slogan || '',
+        about: user.startupProfile?.about || '',
+        website: user.startupProfile?.website || '',
+        location: user.startupProfile?.location || 'Hovedstaden',
+        industry: user.startupProfile?.industry || 'GreenTech',
+        teamSize: user.startupProfile?.teamSize || '1-10',
+        selectedValues: user.startupProfile?.selectedValues || []
+      }));
+    }
+  }, [user]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
+        const base64 = reader.result as string;
+        updateProfileImage(base64);
       };
       reader.readAsDataURL(file);
     }
@@ -45,6 +61,15 @@ const BrandProfile: React.FC = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    updateStartupProfile({
+      slogan: formData.slogan,
+      about: formData.about,
+      website: formData.website,
+      location: formData.location,
+      industry: formData.industry,
+      teamSize: formData.teamSize,
+      selectedValues: formData.selectedValues
+    });
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };
@@ -65,8 +90,8 @@ const BrandProfile: React.FC = () => {
             onClick={() => fileInputRef.current?.click()}
             className="w-40 h-40 bg-[#F4F7F5] rounded-[2rem] border-2 border-dashed border-[#2D5A4C]/20 flex flex-col items-center justify-center cursor-pointer hover:border-[#2D5A4C] hover:bg-[#2D5A4C]/5 transition-all group overflow-hidden relative"
           >
-            {logoPreview ? (
-              <img src={logoPreview} alt="Preview" className="w-full h-full object-cover" />
+            {user?.profileImage ? (
+              <img src={user.profileImage} alt="Preview" className="w-full h-full object-cover" />
             ) : (
               <>
                 <Camera size={32} className="text-[#2D5A4C]/20 group-hover:text-[#2D5A4C] transition-colors mb-2" />
@@ -90,11 +115,10 @@ const BrandProfile: React.FC = () => {
             <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">{t.brand.name}</label>
             <input 
               required
+              disabled
               type="text" 
-              placeholder="e.g. Acme Tech"
-              className="w-full px-6 py-4 rounded-2xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all" 
+              className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-transparent outline-none font-bold text-[#1A2E26]/50 cursor-not-allowed" 
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
             />
           </div>
           <div className="space-y-3">
