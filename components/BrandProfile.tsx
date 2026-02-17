@@ -26,13 +26,13 @@ const BrandProfile: React.FC = () => {
       setFormData(prev => ({
         ...prev,
         name: user.name || prev.name,
-        slogan: user.startupProfile?.slogan || '',
-        about: user.startupProfile?.about || '',
-        website: user.startupProfile?.website || '',
-        location: user.startupProfile?.location || 'Hovedstaden',
-        industry: user.startupProfile?.industry || 'GreenTech',
-        teamSize: user.startupProfile?.teamSize || '1-10',
-        selectedValues: user.startupProfile?.selectedValues || []
+        slogan: user.startupProfile?.slogan || prev.slogan,
+        about: user.startupProfile?.about || prev.about,
+        website: user.startupProfile?.website || prev.website,
+        location: user.startupProfile?.location || prev.location,
+        industry: user.startupProfile?.industry || prev.industry,
+        teamSize: user.startupProfile?.teamSize || prev.teamSize,
+        selectedValues: user.startupProfile?.selectedValues || prev.selectedValues
       }));
     }
   }, [user]);
@@ -72,13 +72,15 @@ const BrandProfile: React.FC = () => {
       selectedValues: formData.selectedValues || []
     };
     
+    // 1. Atualizar o perfil privado do usuário
     updateStartupProfile(profileData);
     
+    // 2. Sincronizar com o ecossistema público (Landing Page)
     if (user?.email) {
       syncStartupToEcosystem({
-        id: user.email,
+        id: user.email.toLowerCase(),
         name: formData.name || user.name || 'Startup',
-        logo: user.profileImage || `https://via.placeholder.com/100?text=${(formData.name || 'S')[0]}`,
+        logo: user.profileImage || `https://via.placeholder.com/200?text=${(formData.name || 'S')[0]}`,
         slogan: formData.slogan || '',
         industry: formData.industry || 'Tech',
         about: formData.about || '',
@@ -105,7 +107,7 @@ const BrandProfile: React.FC = () => {
           </label>
           <div 
             onClick={() => fileInputRef.current?.click()}
-            className="w-40 h-40 bg-[#F4F7F5] rounded-[2rem] border-2 border-dashed border-[#2D5A4C]/20 flex flex-col items-center justify-center cursor-pointer hover:border-[#2D5A4C] hover:bg-[#2D5A4C]/5 transition-all group overflow-hidden relative"
+            className="w-44 h-44 bg-[#F4F7F5] rounded-[2.5rem] border-2 border-dashed border-[#2D5A4C]/20 flex flex-col items-center justify-center cursor-pointer hover:border-[#2D5A4C] hover:bg-[#2D5A4C]/5 transition-all group overflow-hidden relative shadow-inner"
           >
             {user?.profileImage ? (
               <img src={user.profileImage} alt="Preview" className="w-full h-full object-cover" />

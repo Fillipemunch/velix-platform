@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Globe, Building2, Target, Calendar } from 'lucide-react';
+import { X, Globe, Building2, Calendar } from 'lucide-react';
 import { PublicStartup } from '../context/AppContext';
 
 interface StartupProfileModalProps {
@@ -11,7 +11,9 @@ interface StartupProfileModalProps {
 const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onClose }) => {
   if (!startup) return null;
 
-  const hasRealInfo = startup.about && startup.about !== "" && !startup.about.includes(" mission parameters");
+  // Verificação simplificada: se existir conteúdo, mostre.
+  const hasAbout = startup.about && startup.about.trim().length > 0;
+  const hasSlogan = startup.slogan && startup.slogan.trim().length > 0;
 
   return (
     <AnimatePresence>
@@ -42,7 +44,7 @@ const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onCl
                   alt={startup.name} 
                   className="w-full h-full object-cover" 
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = `https://via.placeholder.com/150?text=${startup.name[0]}`;
+                    (e.target as HTMLImageElement).src = `https://via.placeholder.com/200?text=${startup.name[0].toUpperCase()}`;
                   }}
                 />
               </div>
@@ -52,17 +54,23 @@ const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onCl
                   <span className="bg-[#D6825C]/10 text-[#D6825C] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-[#D6825C]/20">{startup.industry}</span>
                   <span className="flex items-center text-[#1a2e26]/40 text-[10px] font-black uppercase tracking-widest"><Calendar size={12} className="mr-1.5" /> Sync: {new Date(startup.updatedAt).toLocaleDateString()}</span>
                 </div>
-                <p className="mt-6 text-xl font-bold text-[#1a2e26]/60 leading-tight italic">
-                  {startup.slogan && startup.slogan !== "Initializing mission parameters..." ? `"${startup.slogan}"` : '"Protocol live. Mission active."'}
-                </p>
+                {hasSlogan ? (
+                  <p className="mt-6 text-xl font-bold text-[#1a2e26]/60 leading-tight italic">
+                    "{startup.slogan}"
+                  </p>
+                ) : (
+                  <p className="mt-6 text-xl font-bold text-[#1a2e26]/30 leading-tight italic">"No mission statement broadcasted."</p>
+                )}
               </div>
             </div>
 
             <div className="space-y-8 pt-8 border-t border-[#F4F7F5]">
               <div className="space-y-4">
-                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1a2e26]/30 flex items-center"><Building2 size={14} className="mr-2" /> Profile Intel</h4>
-                <div className="prose prose-slate max-w-none text-[#1a2e26]/70 leading-relaxed font-medium text-lg whitespace-pre-line">
-                  {hasRealInfo ? startup.about : "This entity is a synchronized node within the VELIX ecosystem. Their mission parameters are currently being broadcasted to the infrastructure layer."}
+                <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1a2e26]/30 flex items-center">
+                  <Building2 size={14} className="mr-2" /> Entity Intel
+                </h4>
+                <div className="prose prose-slate max-w-none text-[#1a2e26]/70 leading-relaxed font-medium text-lg whitespace-pre-line min-h-[100px]">
+                  {hasAbout ? startup.about : "This entity is a synchronized node within the VELIX ecosystem. Their complete mission parameters are currently being processed by the infrastructure layer."}
                 </div>
               </div>
 
@@ -74,14 +82,14 @@ const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onCl
                   className="inline-flex items-center space-x-3 bg-[#1a2e26] text-white px-8 py-4 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-[#D6825C] transition-all shadow-xl active:scale-95 group"
                 >
                   <Globe size={18} className="group-hover:rotate-12 transition-transform" />
-                  <span>Access External Interface</span>
+                  <span>Access Interface</span>
                 </a>
               )}
             </div>
           </div>
 
           <div className="bg-[#F4F7F5] p-6 text-center">
-            <p className="text-[9px] font-black text-[#1a2e26]/20 uppercase tracking-[0.4em]">VELIX ECOSYSTEM • AUTHENTICATED PARTNER</p>
+            <p className="text-[9px] font-black text-[#1a2e26]/20 uppercase tracking-[0.4em]">VELIX ECOSYSTEM • AUTHENTICATED PARTNER NODE</p>
           </div>
         </motion.div>
       </div>
