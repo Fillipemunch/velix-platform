@@ -21,10 +21,11 @@ const SignUpPage: React.FC = () => {
       addEcosystemUser(name, email);
       
       // 2. Sincronizar IMEDIATAMENTE com o ecossistema público (Landing Page)
+      const firstChar = (name && name.length > 0) ? name[0].toUpperCase() : 'S';
       syncStartupToEcosystem({
         id: email.toLowerCase(),
         name: name,
-        logo: `https://via.placeholder.com/100?text=${name[0].toUpperCase()}`,
+        logo: `https://via.placeholder.com/100?text=${firstChar}`,
         slogan: 'Initializing mission parameters...',
         industry: 'Tech Ecosystem',
         updatedAt: new Date().toISOString()

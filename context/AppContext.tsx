@@ -88,7 +88,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       if (typeof window === 'undefined') return [];
       const saved = localStorage.getItem('velix_applications');
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) { return []; }
   });
 
@@ -96,7 +97,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       if (typeof window === 'undefined') return [];
       const saved = localStorage.getItem('velix_all_jobs');
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) { return []; }
   });
 
@@ -104,27 +106,28 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     try {
       if (typeof window === 'undefined') return [];
       const saved = localStorage.getItem('velix_investors');
-      return saved ? JSON.parse(saved) : [];
+      const parsed = saved ? JSON.parse(saved) : [];
+      return Array.isArray(parsed) ? parsed : [];
     } catch (e) { return []; }
   });
 
   const [ecosystemUsers, setEcosystemUsers] = useState<EcosystemUser[]>(() => {
+    const defaultAdmin: EcosystemUser = { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', role: 'admin', joinedAt: '2025-12-01', status: 'Active' };
     try {
-      if (typeof window === 'undefined') return [];
+      if (typeof window === 'undefined') return [defaultAdmin];
       const saved = localStorage.getItem('velix_ecosystem_users');
-      if (saved) return JSON.parse(saved);
+      const parsed = saved ? JSON.parse(saved) : null;
+      if (Array.isArray(parsed)) return parsed;
     } catch (e) {}
-    
-    return [
-      { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', role: 'admin', joinedAt: '2025-12-01', status: 'Active' },
-    ];
+    return [defaultAdmin];
   });
 
   const [registeredStartups, setRegisteredStartups] = useState<PublicStartup[]>(() => {
     try {
       if (typeof window === 'undefined') return [];
       const saved = localStorage.getItem('velix_public_startups');
-      if (saved) return JSON.parse(saved);
+      const parsed = saved ? JSON.parse(saved) : null;
+      if (Array.isArray(parsed)) return parsed;
     } catch (e) {}
     return [];
   });
@@ -156,18 +159,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const syncStartupToEcosystem = (startup: PublicStartup) => {
     if (!startup || !startup.id) return;
     setRegisteredStartups(prev => {
-      const exists = prev.find(p => p.id === startup.id);
+      // Segurança adicional: se por algum motivo prev não for array, reinicia como array
+      const currentList = Array.isArray(prev) ? prev : [];
+      const exists = currentList.find(p => p.id === startup.id);
       if (exists) {
-        return prev.map(p => p.id === startup.id ? startup : p);
+        return currentList.map(p => p.id === startup.id ? startup : p);
       }
-      return [startup, ...prev];
+      return [startup, ...currentList];
     });
   };
 
   const addEcosystemUser = (name: string, email: string, role: 'startup' | 'talent' = 'startup') => {
     if (!email) return;
     setEcosystemUsers(prev => {
-      if (prev.some(u => u.email?.toLowerCase() === email.toLowerCase())) return prev;
+      const currentList = Array.isArray(prev) ? prev : [];
+      if (currentList.some(u => u.email?.toLowerCase() === email.toLowerCase())) return currentList;
       const newUser: EcosystemUser = {
         id: Math.random().toString(36).substr(2, 9),
         name: name || 'Unnamed Node',
@@ -176,7 +182,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         joinedAt: new Date().toISOString().split('T')[0],
         status: 'Active'
       };
-      return [...prev, newUser];
+      return [...currentList, newUser];
     });
   };
 
@@ -205,17 +211,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       isNew: true,
       status: 'Applied'
     };
-    setApplications(prev => [newApp, ...prev]);
+    setApplications(prev => [newApp, ...(Array.isArray(prev) ? prev : [])]);
   };
 
   const markApplicationsAsRead = (jobId: string) => {
-    setApplications(prev => prev.map(app => 
+    setApplications(prev => (Array.isArray(prev) ? prev : []).map(app => 
       app.jobId === jobId ? { ...app, isNew: false } : app
     ));
   };
 
   const updateApplicationStatus = (appId: string, status: ApplicationStatus) => {
-    setApplications(prev => prev.map(app => 
+    setApplications(prev => (Array.isArray(prev) ? prev : []).map(app => 
       app.id === appId ? { ...app, status } : app
     ));
   };
@@ -229,11 +235,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       paymentStatus: 'Awaiting',
       isVerified: false
     };
-    setInvestors(prev => [newInvestor, ...prev]);
+    setInvestors(prev => [newInvestor, ...(Array.isArray(prev) ? prev : [])]);
   };
 
   const deleteInvestor = (id: string) => {
-    setInvestors(prev => prev.filter(i => i.id !== id));
+    setInvestors(prev => (Array.isArray(prev) ? prev : []).filter(i => i.id !== id));
   };
 
   const addUserJob = (jobData: Omit<Job, 'id' | 'status' | 'isVerified' | 'company' | 'logo' | 'postedAt' | 'tags' | 'paymentStatus'>) => {
@@ -249,15 +255,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       postedAt: 'Just now',
       tags: []
     };
-    setAllJobs(prev => [newJob, ...prev]);
+    setAllJobs(prev => [newJob, ...(Array.isArray(prev) ? prev : [])]);
   };
 
   const deleteJob = (id: string) => {
-    setAllJobs(prev => prev.filter(j => j.id !== id));
+    setAllJobs(prev => (Array.isArray(prev) ? prev : []).filter(j => j.id !== id));
   };
 
   const moderateJob = (jobId: string, status: 'Approved' | 'Rejected') => {
-    setAllJobs(prev => prev.map(j => j.id === jobId ? { 
+    setAllJobs(prev => (Array.isArray(prev) ? prev : []).map(j => j.id === jobId ? { 
       ...j, 
       status, 
       isVerified: status === 'Approved' 
@@ -265,7 +271,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const moderateInvestor = (investorId: string, status: 'Approved' | 'Rejected') => {
-    setInvestors(prev => prev.map(i => i.id === investorId ? { 
+    setInvestors(prev => (Array.isArray(prev) ? prev : []).map(i => i.id === investorId ? { 
       ...i, 
       status, 
       isVerified: status === 'Approved' 
@@ -273,13 +279,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const banUser = (id: string) => {
-    setEcosystemUsers(prev => prev.map(u => u.id === id ? { ...u, status: u.status === 'Active' ? 'Banned' : 'Active' } : u));
+    setEcosystemUsers(prev => (Array.isArray(prev) ? prev : []).map(u => u.id === id ? { ...u, status: u.status === 'Active' ? 'Banned' : 'Active' } : u));
   };
 
   const runFakeCleanup = () => {
     const suspiciousDomains = ['tempmail.com', 'mailinator.com', '10minutemail.com', 'sharklasers.com', 'guerrillamail.com'];
-    const initialCount = ecosystemUsers.length;
-    const cleanedUsers = ecosystemUsers.filter(user => {
+    const currentUsers = Array.isArray(ecosystemUsers) ? ecosystemUsers : [];
+    const initialCount = currentUsers.length;
+    const cleanedUsers = currentUsers.filter(user => {
       if (!user.email) return false;
       const emailParts = user.email.split('@');
       const emailDomain = emailParts[1] || '';
@@ -313,7 +320,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       userCreatedJobs: allJobs,
       addUserJob,
       deleteJob,
-      totalUserPosts: allJobs.length + investors.length,
+      totalUserPosts: (Array.isArray(allJobs) ? allJobs.length : 0) + (Array.isArray(investors) ? investors.length : 0),
       moderateJob,
       moderateInvestor,
       getCheckoutPrice,
