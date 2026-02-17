@@ -5,6 +5,7 @@ interface User {
   name: string;
   isSubscribed?: boolean;
   isAdmin?: boolean;
+  profileImage?: string;
 }
 
 interface AuthContextType {
@@ -12,6 +13,7 @@ interface AuthContextType {
   login: (email: string) => void;
   logout: () => void;
   subscribe: () => void;
+  updateProfileImage: (image: string) => void;
   isAuthenticated: boolean;
   isSubscribed: boolean;
   isAdmin: boolean;
@@ -30,14 +32,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const login = (email: string) => {
-    // EXPLICIT ADMIN VALIDATION: Restricted to the specified founder email
     const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
     
     const userData: User = { 
       email, 
       name: email.split('@')[0], 
       isSubscribed: false,
-      isAdmin
+      isAdmin,
+      profileImage: isAdmin ? "/IMG_6411%20Lille.png" : undefined
     };
     setUser(userData);
     localStorage.setItem('velix_user', JSON.stringify(userData));
@@ -56,12 +58,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
+  const updateProfileImage = (image: string) => {
+    if (user) {
+      const updatedUser = { ...user, profileImage: image };
+      setUser(updatedUser);
+      localStorage.setItem('velix_user', JSON.stringify(updatedUser));
+    }
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
       login, 
       logout, 
       subscribe,
+      updateProfileImage,
       isAuthenticated: !!user,
       isSubscribed: !!user?.isSubscribed,
       isAdmin: !!user?.isAdmin
@@ -79,6 +90,7 @@ export const useAuth = () => {
       login: () => {},
       logout: () => {},
       subscribe: () => {},
+      updateProfileImage: () => {},
       isAuthenticated: false,
       isSubscribed: false,
       isAdmin: false

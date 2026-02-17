@@ -91,11 +91,11 @@ const DashboardPage: React.FC = () => {
         <div className="mt-12 pt-10 border-t border-white/5">
            <div className="flex items-center space-x-5 px-4 mb-10 group">
              <div className="w-16 h-16 bg-[#1a2e26] rounded-[1.5rem] border-2 border-white/10 flex items-center justify-center font-black text-[#D6825C] overflow-hidden shrink-0 shadow-2xl relative ring-2 ring-white/5">
-               {isMasterAdmin ? (
+               {user?.profileImage ? (
                  <img 
-                  src={founderImageUrl} 
+                  src={user.profileImage} 
                   className="w-full h-full object-cover transition-transform group-hover:scale-110 duration-700" 
-                  alt="Fillipe Munch"
+                  alt={user.name}
                  />
                ) : (
                  <div className="w-full h-full flex items-center justify-center text-2xl bg-white/5">{user?.name?.[0] || 'V'}</div>
