@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
-import { Search, MapPin, ArrowRight, Zap, TrendingUp, Cpu, Globe, Shield } from 'lucide-react';
+import { useApp, PublicStartup } from '../context/AppContext';
+import { Search, MapPin, ArrowRight, Zap, TrendingUp, Cpu, Globe, Shield, Building2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const featuredCompanies = [
-  { name: 'EcoStream', logo: 'https://picsum.photos/seed/eco/100/100', category: 'Sustainability', openJobs: 4 },
-  { name: 'Lunar', logo: 'https://picsum.photos/seed/lunar/100/100', category: 'Fintech', openJobs: 12 },
-  { name: 'Pleo', logo: 'https://picsum.photos/seed/pleo/100/100', category: 'SaaS', openJobs: 8 },
-  { name: 'Volt', logo: 'https://picsum.photos/seed/volt/100/100', category: 'Energy', openJobs: 3 },
-];
+import StartupProfileModal from '../components/StartupProfileModal';
 
 const LandingPage: React.FC = () => {
   const [mounted, setMounted] = useState(false);
@@ -20,10 +14,14 @@ const LandingPage: React.FC = () => {
   const [query, setQuery] = useState('');
   const [region, setRegion] = useState('');
   const [showBanner, setShowBanner] = useState(true);
+  const [selectedStartup, setSelectedStartup] = useState<PublicStartup | null>(null);
 
   if (!mounted || !appContext) return null;
-  const { t, setFilters, language, investors } = appContext;
+  const { t, setFilters, language, investors, registeredStartups } = appContext;
   const featuredInvestors = investors.slice(0, 3);
+
+  // Take the most recently updated startups
+  const partners = registeredStartups.slice(0, 12);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +105,39 @@ const LandingPage: React.FC = () => {
           </button>
         </motion.form>
       </section>
+
+      {/* Dynamic Ecosystem Partners Section */}
+      {partners.length > 0 && (
+        <section className="py-24 bg-white border-y border-slate-50">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-center space-x-10 mb-16">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1a2e26]/20 whitespace-nowrap">Integrated Partners</h2>
+              <div className="h-px bg-[#1a2e26]/5 flex-1"></div>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+              {partners.map((partner, idx) => (
+                <motion.div 
+                  key={partner.id} 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                  onClick={() => setSelectedStartup(partner)}
+                  className="flex flex-col items-center group cursor-pointer"
+                >
+                  <div className="w-24 h-24 bg-[#F9FBF9] rounded-[2rem] border border-[#1a2e26]/5 flex items-center justify-center mb-4 group-hover:shadow-xl group-hover:border-[#D6825C]/40 transition-all overflow-hidden relative grayscale hover:grayscale-0 active:scale-95">
+                    <img src={partner.logo} alt={partner.name} className="w-full h-full object-cover p-4 opacity-40 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <p className="text-[9px] font-black text-[#1a2e26]/30 uppercase tracking-widest group-hover:text-[#D6825C] transition-colors text-center">{partner.name}</p>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <StartupProfileModal startup={selectedStartup} onClose={() => setSelectedStartup(null)} />
 
       <section className="py-32 bg-[#1a2e26] text-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">

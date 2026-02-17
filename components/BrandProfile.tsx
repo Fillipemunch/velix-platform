@@ -5,7 +5,7 @@ import { Camera, Globe, MapPin, Users, Target, Save, CheckCircle2 } from 'lucide
 import { motion, AnimatePresence } from 'framer-motion';
 
 const BrandProfile: React.FC = () => {
-  const { t } = useApp();
+  const { t, syncStartupToEcosystem } = useApp();
   const { user, updateStartupProfile, updateProfileImage } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaved, setIsSaved] = useState(false);
@@ -21,7 +21,6 @@ const BrandProfile: React.FC = () => {
     selectedValues: user?.startupProfile?.selectedValues || [] as string[]
   });
 
-  // Sync internal state if user updates elsewhere (e.g. settings)
   useEffect(() => {
     if (user?.startupProfile) {
       setFormData(prev => ({
@@ -61,7 +60,7 @@ const BrandProfile: React.FC = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    updateStartupProfile({
+    const profileData = {
       slogan: formData.slogan,
       about: formData.about,
       website: formData.website,
@@ -69,7 +68,23 @@ const BrandProfile: React.FC = () => {
       industry: formData.industry,
       teamSize: formData.teamSize,
       selectedValues: formData.selectedValues
-    });
+    };
+    
+    updateStartupProfile(profileData);
+    
+    if (user?.email) {
+      syncStartupToEcosystem({
+        id: user.email,
+        name: formData.name,
+        logo: user.profileImage || `https://via.placeholder.com/100?text=${formData.name[0]}`,
+        slogan: formData.slogan,
+        industry: formData.industry,
+        about: formData.about,
+        website: formData.website,
+        updatedAt: new Date().toISOString()
+      });
+    }
+
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000);
   };
@@ -100,105 +115,47 @@ const BrandProfile: React.FC = () => {
                 </span>
               </>
             )}
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/*" 
-              onChange={handleImageChange} 
-            />
+            <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageChange} />
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-3">
             <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">{t.brand.name}</label>
-            <input 
-              required
-              disabled
-              type="text" 
-              className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-transparent outline-none font-bold text-[#1A2E26]/50 cursor-not-allowed" 
-              value={formData.name}
-            />
+            <input required disabled type="text" className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-transparent outline-none font-bold text-[#1A2E26]/50 cursor-not-allowed" value={formData.name} />
           </div>
           <div className="space-y-3">
             <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">{t.brand.slogan}</label>
-            <input 
-              required
-              type="text" 
-              placeholder="Short mission statement..."
-              className="w-full px-6 py-4 rounded-2xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all" 
-              value={formData.slogan}
-              onChange={(e) => setFormData({...formData, slogan: e.target.value})}
-            />
+            <input required type="text" placeholder="Short mission statement..." className="w-full px-6 py-4 rounded-2xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all" value={formData.slogan} onChange={(e) => setFormData({...formData, slogan: e.target.value})} />
           </div>
         </div>
 
         <div className="space-y-3">
           <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">{t.brand.about}</label>
-          <textarea 
-            required
-            rows={5}
-            placeholder="Tell the ecosystem about your journey and culture..."
-            className="w-full px-6 py-4 rounded-2xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all resize-none leading-relaxed" 
-            value={formData.about}
-            onChange={(e) => setFormData({...formData, about: e.target.value})}
-          />
+          <textarea required rows={5} placeholder="Tell the ecosystem about your journey and culture..." className="w-full px-6 py-4 rounded-2xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all resize-none leading-relaxed" value={formData.about} onChange={(e) => setFormData({...formData, about: e.target.value})} />
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">
-              <span className="flex items-center"><Globe size={12} className="mr-1" /> {t.brand.website}</span>
-            </label>
-            <input 
-              type="url" 
-              placeholder="https://company.com"
-              className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm" 
-              value={formData.website}
-              onChange={(e) => setFormData({...formData, website: e.target.value})}
-            />
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2"><span className="flex items-center"><Globe size={12} className="mr-1" /> {t.brand.website}</span></label>
+            <input type="url" placeholder="https://company.com" className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm" value={formData.website} onChange={(e) => setFormData({...formData, website: e.target.value})} />
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">
-              <span className="flex items-center"><MapPin size={12} className="mr-1" /> {t.brand.location}</span>
-            </label>
-            <select 
-              className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm appearance-none cursor-pointer" 
-              value={formData.location}
-              onChange={(e) => setFormData({...formData, location: e.target.value})}
-            >
-              {Object.keys(t.regions).map(reg => (
-                <option key={reg} value={reg}>{t.regions[reg]}</option>
-              ))}
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2"><span className="flex items-center"><MapPin size={12} className="mr-1" /> {t.brand.location}</span></label>
+            <select className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm appearance-none cursor-pointer" value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})}>
+              {Object.keys(t.regions).map(reg => (<option key={reg} value={reg}>{t.regions[reg]}</option>))}
             </select>
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">
-              <span className="flex items-center"><Target size={12} className="mr-1" /> {t.brand.industry}</span>
-            </label>
-            <select 
-              className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm appearance-none cursor-pointer" 
-              value={formData.industry}
-              onChange={(e) => setFormData({...formData, industry: e.target.value})}
-            >
-              {Object.keys(t.brand.industries).map(ind => (
-                <option key={ind} value={ind}>{t.brand.industries[ind]}</option>
-              ))}
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2"><span className="flex items-center"><Target size={12} className="mr-1" /> {t.brand.industry}</span></label>
+            <select className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm appearance-none cursor-pointer" value={formData.industry} onChange={(e) => setFormData({...formData, industry: e.target.value})}>
+              {Object.keys(t.brand.industries).map(ind => (<option key={ind} value={ind}>{t.brand.industries[ind]}</option>))}
             </select>
           </div>
           <div className="space-y-3">
-            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2">
-              <span className="flex items-center"><Users size={12} className="mr-1" /> {t.brand.team_size}</span>
-            </label>
-            <select 
-              className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm appearance-none cursor-pointer" 
-              value={formData.teamSize}
-              onChange={(e) => setFormData({...formData, teamSize: e.target.value})}
-            >
-              {['1-10', '11-50', '51-200', '201-500', '500+'].map(size => (
-                <option key={size} value={size}>{size}</option>
-              ))}
+            <label className="text-[10px] font-black uppercase tracking-widest text-[#1A2E26]/40 ml-2"><span className="flex items-center"><Users size={12} className="mr-1" /> {t.brand.team_size}</span></label>
+            <select className="w-full px-5 py-4 rounded-xl bg-[#F4F7F5] border border-transparent focus:bg-white focus:border-[#2D5A4C]/20 outline-none font-bold text-[#1A2E26] transition-all text-sm appearance-none cursor-pointer" value={formData.teamSize} onChange={(e) => setFormData({...formData, teamSize: e.target.value})}>
+              {['1-10', '11-50', '51-200', '201-500', '500+'].map(size => (<option key={size} value={size}>{size}</option>))}
             </select>
           </div>
         </div>
@@ -209,16 +166,7 @@ const BrandProfile: React.FC = () => {
             {t.brand.company_values.map((val: string) => {
               const isSelected = formData.selectedValues.includes(val);
               return (
-                <button
-                  key={val}
-                  type="button"
-                  onClick={() => toggleValue(val)}
-                  className={`px-6 py-3 rounded-xl text-sm font-bold transition-all border ${
-                    isSelected 
-                    ? 'bg-[#1a2e26] border-[#1a2e26] text-white shadow-lg' 
-                    : 'bg-[#F4F7F5] border-transparent text-[#1A2E26]/40 hover:border-[#2D5A4C]/20 hover:text-[#2D5A4C]'
-                  }`}
-                >
+                <button key={val} type="button" onClick={() => toggleValue(val)} className={`px-6 py-3 rounded-xl text-sm font-bold transition-all border ${isSelected ? 'bg-[#1a2e26] border-[#1a2e26] text-white shadow-lg' : 'bg-[#F4F7F5] border-transparent text-[#1A2E26]/40 hover:border-[#2D5A4C]/20 hover:text-[#2D5A4C]'}`}>
                   {val}
                 </button>
               );
@@ -229,23 +177,13 @@ const BrandProfile: React.FC = () => {
         <div className="pt-8 border-t border-[#F4F7F5] flex flex-col md:flex-row items-center justify-between gap-6">
           <AnimatePresence>
             {isSaved && (
-              <motion.div 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                className="flex items-center text-green-600 font-black text-sm"
-              >
-                <CheckCircle2 size={18} className="mr-2" />
-                {t.brand.success}
+              <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="flex items-center text-green-600 font-black text-sm">
+                <CheckCircle2 size={18} className="mr-2" /> {t.brand.success}
               </motion.div>
             )}
           </AnimatePresence>
-          <button 
-            type="submit"
-            className="w-full md:w-auto bg-[#1a2e26] text-white px-12 py-5 rounded-2xl font-black text-lg active:scale-95 transition-all shadow-xl hover:bg-[#D6825C] flex items-center justify-center space-x-3"
-          >
-            <Save size={20} />
-            <span>{t.brand.save}</span>
+          <button type="submit" className="w-full md:w-auto bg-[#1a2e26] text-white px-12 py-5 rounded-2xl font-black text-lg active:scale-95 transition-all shadow-xl hover:bg-[#D6825C] flex items-center justify-center space-x-3">
+            <Save size={20} /> <span>{t.brand.save}</span>
           </button>
         </div>
       </form>

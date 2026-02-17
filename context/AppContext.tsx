@@ -28,6 +28,17 @@ export interface EcosystemUser {
   isSuspicious?: boolean;
 }
 
+export interface PublicStartup {
+  id: string;
+  name: string;
+  logo: string;
+  slogan: string;
+  industry: string;
+  about?: string;
+  website?: string;
+  updatedAt: string;
+}
+
 interface AppContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -54,6 +65,8 @@ interface AppContextType {
   banUser: (id: string) => void;
   runFakeCleanup: () => { removedCount: number };
   nukeDatabase: () => void;
+  registeredStartups: PublicStartup[];
+  syncStartupToEcosystem: (startup: PublicStartup) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -99,6 +112,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     ];
   });
 
+  const [registeredStartups, setRegisteredStartups] = useState<PublicStartup[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const saved = localStorage.getItem('velix_public_startups');
+    if (saved) return JSON.parse(saved);
+    
+    // START WITH EMPTY REAL ECOSYSTEM
+    return [];
+  });
+
   useEffect(() => {
     localStorage.setItem('velix_lang', language);
   }, [language]);
@@ -118,6 +140,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   useEffect(() => {
     localStorage.setItem('velix_ecosystem_users', JSON.stringify(ecosystemUsers));
   }, [ecosystemUsers]);
+
+  useEffect(() => {
+    localStorage.setItem('velix_public_startups', JSON.stringify(registeredStartups));
+  }, [registeredStartups]);
+
+  const syncStartupToEcosystem = (startup: PublicStartup) => {
+    setRegisteredStartups(prev => {
+      const exists = prev.find(p => p.id === startup.id);
+      if (exists) {
+        return prev.map(p => p.id === startup.id ? startup : p);
+      }
+      return [startup, ...prev];
+    });
+  };
 
   const addEcosystemUser = (name: string, email: string, role: 'startup' | 'talent' = 'startup') => {
     setEcosystemUsers(prev => {
@@ -140,9 +176,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setAllJobs([]);
     setInvestors([]);
     setApplications([]);
+    setRegisteredStartups([]);
     localStorage.removeItem('velix_all_jobs');
     localStorage.removeItem('velix_investors');
     localStorage.removeItem('velix_applications');
+    localStorage.removeItem('velix_public_startups');
   };
 
   const getCheckoutPrice = (cvr: string) => {
@@ -235,6 +273,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const emailParts = user.email.split('@');
       const emailDomain = emailParts[1] || '';
       const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);
+      // Fix: Corrected LocalPart to localPart and used index 0 for splitting email
       const localPart = emailParts[0] || '';
       const hasRandomPattern = /\d{5,}/.test(localPart);
       if (user.email === 'fillipeferreiramunch@gmail.com') return true;
@@ -275,7 +314,9 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       addEcosystemUser,
       banUser,
       runFakeCleanup,
-      nukeDatabase
+      nukeDatabase,
+      registeredStartups,
+      syncStartupToEcosystem
     }}>
       {children}
     </AppContext.Provider>
@@ -310,7 +351,9 @@ export const useApp = () => {
       addEcosystemUser: () => {},
       banUser: () => {},
       runFakeCleanup: () => ({ removedCount: 0 }),
-      nukeDatabase: () => {}
+      nukeDatabase: () => {},
+      registeredStartups: [],
+      syncStartupToEcosystem: () => {}
     } as any;
   }
   return context;
