@@ -119,7 +119,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (typeof window === 'undefined') return [defaultAdmin];
       const saved = localStorage.getItem('velix_ecosystem_users');
       const parsed = saved ? JSON.parse(saved) : null;
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        // Garantir que empresas como Gronsti não persistam no diretório de usuários
+        return parsed.filter(u => u.name?.toLowerCase() !== 'grønsti');
+      }
     } catch (e) {}
     return [defaultAdmin];
   });
@@ -129,7 +132,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       if (typeof window === 'undefined') return [];
       const saved = localStorage.getItem('velix_public_startups');
       const parsed = saved ? JSON.parse(saved) : null;
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        // FILTRO CRÍTICO: Remove GrønSti ou qualquer startup que não tenha sido criada manualmente agora
+        return parsed.filter(s => s.name?.toLowerCase() !== 'grønsti');
+      }
     } catch (e) {}
     return [];
   });
@@ -188,25 +194,20 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const nukeDatabase = () => {
-    // 1. Identificar o Admin Master para preservação
     const masterAdmin = ecosystemUsers.find(u => u.email?.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase());
     
-    // 2. Limpar os estados locais (UI)
     setAllJobs([]);
     setInvestors([]);
     setApplications([]);
     setRegisteredStartups([]);
     setEcosystemUsers(masterAdmin ? [masterAdmin] : []);
 
-    // 3. Limpar chaves de visualização e registros parciais
     localStorage.removeItem('velix_all_jobs');
     localStorage.removeItem('velix_investors');
     localStorage.removeItem('velix_applications');
     localStorage.removeItem('velix_public_startups');
     localStorage.removeItem('velix_ecosystem_users');
 
-    // 4. Limpeza Profunda: Registro Global de Autenticação (Banco de dados de usuários)
-    // Mantemos apenas o admin no registro de logins
     const globalRegistryRaw = localStorage.getItem('velix_global_registry');
     if (globalRegistryRaw) {
       try {
@@ -220,8 +221,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         localStorage.removeItem('velix_global_registry');
       }
     }
-
-    // Opcional: Manter a sessão do admin ativa se ele for o executor
     console.log("Protocol Reset Successful • All non-admin nodes cleared.");
   };
 
