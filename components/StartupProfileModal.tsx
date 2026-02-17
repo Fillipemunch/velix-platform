@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Globe, Building2, Calendar } from 'lucide-react';
+import { X, Globe, Building2, Calendar, Target } from 'lucide-react';
 import { PublicStartup } from '../context/AppContext';
 
 interface StartupProfileModalProps {
@@ -11,9 +11,9 @@ interface StartupProfileModalProps {
 const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onClose }) => {
   if (!startup) return null;
 
-  // Verificação simplificada: se existir conteúdo, mostre.
+  // Verifica se existe conteúdo real escrito pelo usuário
   const hasAbout = startup.about && startup.about.trim().length > 0;
-  const hasSlogan = startup.slogan && startup.slogan.trim().length > 0;
+  const hasSlogan = startup.slogan && startup.slogan.trim().length > 0 && startup.slogan !== "Initializing mission parameters...";
 
   return (
     <AnimatePresence>
@@ -38,7 +38,8 @@ const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onCl
 
           <div className="p-8 md:p-12">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-8 mb-10">
-              <div className="w-32 h-32 bg-[#F4F7F5] rounded-[2rem] border border-[#2D5A4C]/5 overflow-hidden flex-shrink-0 shadow-inner flex items-center justify-center">
+              {/* Logo Area com prioridade para a imagem carregada */}
+              <div className="w-32 h-32 bg-[#F4F7F5] rounded-[2rem] border border-[#2D5A4C]/5 overflow-hidden flex-shrink-0 shadow-inner flex items-center justify-center bg-white">
                 <img 
                   src={startup.logo} 
                   alt={startup.name} 
@@ -48,18 +49,26 @@ const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onCl
                   }}
                 />
               </div>
+              
               <div className="text-center md:text-left pt-4 flex-1">
-                <h2 className="text-4xl font-black text-[#1a2e26] tracking-tighter uppercase leading-none mb-3">{startup.name}</h2>
+                <h2 className="text-4xl font-black text-[#1a2e26] tracking-tighter uppercase leading-none mb-3">
+                  {startup.name}
+                </h2>
                 <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                  <span className="bg-[#D6825C]/10 text-[#D6825C] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-[#D6825C]/20">{startup.industry}</span>
-                  <span className="flex items-center text-[#1a2e26]/40 text-[10px] font-black uppercase tracking-widest"><Calendar size={12} className="mr-1.5" /> Sync: {new Date(startup.updatedAt).toLocaleDateString()}</span>
+                  <span className="bg-[#D6825C]/10 text-[#D6825C] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border border-[#D6825C]/20">
+                    {startup.industry}
+                  </span>
+                  <span className="flex items-center text-[#1a2e26]/40 text-[10px] font-black uppercase tracking-widest">
+                    <Calendar size={12} className="mr-1.5" /> 
+                    Sync: {new Date(startup.updatedAt).toLocaleDateString()}
+                  </span>
                 </div>
-                {hasSlogan ? (
+                
+                {/* Exibe o slogan real ou oculta se for o padrão */}
+                {hasSlogan && (
                   <p className="mt-6 text-xl font-bold text-[#1a2e26]/60 leading-tight italic">
                     "{startup.slogan}"
                   </p>
-                ) : (
-                  <p className="mt-6 text-xl font-bold text-[#1a2e26]/30 leading-tight italic">"No mission statement broadcasted."</p>
                 )}
               </div>
             </div>
@@ -67,10 +76,14 @@ const StartupProfileModal: React.FC<StartupProfileModalProps> = ({ startup, onCl
             <div className="space-y-8 pt-8 border-t border-[#F4F7F5]">
               <div className="space-y-4">
                 <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#1a2e26]/30 flex items-center">
-                  <Building2 size={14} className="mr-2" /> Entity Intel
+                  <Building2 size={14} className="mr-2" /> Corporate Intel
                 </h4>
                 <div className="prose prose-slate max-w-none text-[#1a2e26]/70 leading-relaxed font-medium text-lg whitespace-pre-line min-h-[100px]">
-                  {hasAbout ? startup.about : "This entity is a synchronized node within the VELIX ecosystem. Their complete mission parameters are currently being processed by the infrastructure layer."}
+                  {hasAbout ? (
+                    startup.about
+                  ) : (
+                    <div className="text-slate-300 italic">No description provided by the entity yet.</div>
+                  )}
                 </div>
               </div>
 

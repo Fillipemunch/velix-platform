@@ -76,6 +76,7 @@ const BrandProfile: React.FC = () => {
     updateStartupProfile(profileData);
     
     // 2. Sincronizar com o ecossistema público (Landing Page)
+    // Garantimos que a imagem mais recente do contexto seja usada aqui
     if (user?.email) {
       syncStartupToEcosystem({
         id: user.email.toLowerCase(),
@@ -107,7 +108,7 @@ const BrandProfile: React.FC = () => {
           </label>
           <div 
             onClick={() => fileInputRef.current?.click()}
-            className="w-44 h-44 bg-[#F4F7F5] rounded-[2.5rem] border-2 border-dashed border-[#2D5A4C]/20 flex flex-col items-center justify-center cursor-pointer hover:border-[#2D5A4C] hover:bg-[#2D5A4C]/5 transition-all group overflow-hidden relative shadow-inner"
+            className="w-44 h-44 bg-[#F4F7F5] rounded-[2.5rem] border-2 border-dashed border-[#2D5A4C]/20 flex flex-col items-center justify-center cursor-pointer hover:border-[#2D5A4C] hover:bg-[#2D5A4C]/5 transition-all group overflow-hidden relative shadow-inner bg-white"
           >
             {user?.profileImage ? (
               <img src={user.profileImage} alt="Preview" className="w-full h-full object-cover" />
