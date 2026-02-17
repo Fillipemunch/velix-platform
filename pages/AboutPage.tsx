@@ -16,7 +16,7 @@ const AboutPage: React.FC = () => {
 
   const linkedinUrl = "https://www.linkedin.com/in/fillipe-ferreira-munch-317a75396/";
   // Forced absolute path with encoded space for the public folder
-  const founderImageUrl = "/IMG_6411%20Lille.png";
+  const founderImageUrl = "https://raw.githubusercontent.com/Fillipemunch/velix-platform/main/minha%20foto.png"
   
   return (
     <motion.div 
