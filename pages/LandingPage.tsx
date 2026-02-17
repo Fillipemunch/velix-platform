@@ -20,8 +20,10 @@ const LandingPage: React.FC = () => {
   const { t, setFilters, language, investors, registeredStartups } = appContext;
   const featuredInvestors = investors.slice(0, 3);
 
-  // Take the most recently updated startups
-  const partners = registeredStartups.slice(0, 12);
+  // Ordenar para mostrar os mais recentemente atualizados primeiro
+  const partners = [...registeredStartups].sort((a, b) => 
+    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+  ).slice(0, 12);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,10 +128,14 @@ const LandingPage: React.FC = () => {
                   onClick={() => setSelectedStartup(partner)}
                   className="flex flex-col items-center group cursor-pointer"
                 >
-                  <div className="w-24 h-24 bg-[#F9FBF9] rounded-[2rem] border border-[#1a2e26]/5 flex items-center justify-center mb-4 group-hover:shadow-xl group-hover:border-[#D6825C]/40 transition-all overflow-hidden relative grayscale hover:grayscale-0 active:scale-95">
-                    <img src={partner.logo} alt={partner.name} className="w-full h-full object-cover p-4 opacity-40 group-hover:opacity-100 transition-opacity" />
+                  <div className="w-24 h-24 bg-[#F9FBF9] rounded-[2rem] border border-[#1a2e26]/5 flex items-center justify-center mb-4 group-hover:shadow-xl group-hover:border-[#D6825C]/40 transition-all overflow-hidden relative active:scale-95">
+                    <img 
+                      src={partner.logo} 
+                      alt={partner.name} 
+                      className="w-full h-full object-cover p-2 group-hover:scale-110 transition-transform" 
+                    />
                   </div>
-                  <p className="text-[9px] font-black text-[#1a2e26]/30 uppercase tracking-widest group-hover:text-[#D6825C] transition-colors text-center">{partner.name}</p>
+                  <p className="text-[9px] font-black text-[#1a2e26]/40 uppercase tracking-widest group-hover:text-[#D6825C] transition-colors text-center">{partner.name}</p>
                 </motion.div>
               ))}
             </div>

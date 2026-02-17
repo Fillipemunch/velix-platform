@@ -22,25 +22,26 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
   const [invitingId, setInvitingId] = useState<string | null>(null);
   const [invitedTalents, setInvitedTalents] = useState<string[]>([]);
 
-  // CRITICAL FIX: 
-  // 1. Filter out the current logged in user (Startup shouldn't hire itself)
-  // 2. Filter out users registered as 'startup' (Startups shouldn't appear as candidates)
-  // 3. Filter out the master admin
+  // Filtra usuários de forma segura contra nulos ou indefinidos
   const talents = ecosystemUsers
-    .filter(u => 
-      u.email.toLowerCase() !== 'fillipeferreiramunch@gmail.com' && 
-      u.email.toLowerCase() !== currentUser?.email.toLowerCase() &&
-      u.role === 'talent'
-    )
+    .filter(u => {
+      const userEmail = u.email?.toLowerCase();
+      const currentEmail = currentUser?.email?.toLowerCase();
+      
+      return userEmail && 
+             userEmail !== 'fillipeferreiramunch@gmail.com' && 
+             userEmail !== currentEmail &&
+             u.role === 'talent';
+    })
     .map(user => ({
       id: user.id,
-      name: user.name,
+      name: user.name || 'Anonymous Node',
       role: 'Integrated Node', 
       experience: 'Expert' as const,
       category: 'Tech' as const,
       location: 'Copenhagen Hub',
       tags: ['Verified', 'Ecosystem'],
-      summary: `Active protocol participant since ${user.joinedAt}. Authenticated via Velix Infrastructure.`,
+      summary: `Active protocol participant since ${user.joinedAt || '2026'}. Authenticated via Velix Infrastructure.`,
       status: user.status
     }));
 
@@ -220,11 +221,11 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
                                 <p className="text-[10px] font-black uppercase tracking-widest text-white/40 px-3 py-2 border-b border-white/5 mb-2">
                                   {t.talent_explorer.select_job}
                                 </p>
-                                {startupJobs.length > 0 ? (
+                                {startupJobs && startupJobs.length > 0 ? (
                                   startupJobs.map(job => (
                                     <button
-                                      key={job.id}
-                                      onClick={() => handleInvite(talent.id, job.id!)}
+                                      key={job.id || Math.random().toString()}
+                                      onClick={() => job.id && handleInvite(talent.id, job.id)}
                                       className="w-full text-left px-4 py-3 rounded-xl text-xs font-bold hover:bg-white/10 transition-all text-white/80 hover:text-white"
                                     >
                                       {job.title}

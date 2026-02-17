@@ -25,7 +25,7 @@ const BrandProfile: React.FC = () => {
     if (user?.startupProfile) {
       setFormData(prev => ({
         ...prev,
-        name: user.name,
+        name: user.name || prev.name,
         slogan: user.startupProfile?.slogan || '',
         about: user.startupProfile?.about || '',
         website: user.startupProfile?.website || '',
@@ -60,14 +60,16 @@ const BrandProfile: React.FC = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+
     const profileData = {
-      slogan: formData.slogan,
-      about: formData.about,
-      website: formData.website,
-      location: formData.location,
-      industry: formData.industry,
-      teamSize: formData.teamSize,
-      selectedValues: formData.selectedValues
+      slogan: formData.slogan || '',
+      about: formData.about || '',
+      website: formData.website || '',
+      location: formData.location || 'Hovedstaden',
+      industry: formData.industry || 'GreenTech',
+      teamSize: formData.teamSize || '1-10',
+      selectedValues: formData.selectedValues || []
     };
     
     updateStartupProfile(profileData);
@@ -75,12 +77,12 @@ const BrandProfile: React.FC = () => {
     if (user?.email) {
       syncStartupToEcosystem({
         id: user.email,
-        name: formData.name,
-        logo: user.profileImage || `https://via.placeholder.com/100?text=${formData.name[0]}`,
-        slogan: formData.slogan,
-        industry: formData.industry,
-        about: formData.about,
-        website: formData.website,
+        name: formData.name || user.name || 'Startup',
+        logo: user.profileImage || `https://via.placeholder.com/100?text=${(formData.name || 'S')[0]}`,
+        slogan: formData.slogan || '',
+        industry: formData.industry || 'Tech',
+        about: formData.about || '',
+        website: formData.website || '',
         updatedAt: new Date().toISOString()
       });
     }

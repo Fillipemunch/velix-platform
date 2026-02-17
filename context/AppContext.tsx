@@ -85,27 +85,35 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const [applications, setApplications] = useState<Application[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const saved = localStorage.getItem('velix_applications');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      if (typeof window === 'undefined') return [];
+      const saved = localStorage.getItem('velix_applications');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) { return []; }
   });
 
   const [allJobs, setAllJobs] = useState<Job[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const saved = localStorage.getItem('velix_all_jobs');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      if (typeof window === 'undefined') return [];
+      const saved = localStorage.getItem('velix_all_jobs');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) { return []; }
   });
 
   const [investors, setInvestors] = useState<Investor[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const saved = localStorage.getItem('velix_investors');
-    return saved ? JSON.parse(saved) : [];
+    try {
+      if (typeof window === 'undefined') return [];
+      const saved = localStorage.getItem('velix_investors');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) { return []; }
   });
 
   const [ecosystemUsers, setEcosystemUsers] = useState<EcosystemUser[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const saved = localStorage.getItem('velix_ecosystem_users');
-    if (saved) return JSON.parse(saved);
+    try {
+      if (typeof window === 'undefined') return [];
+      const saved = localStorage.getItem('velix_ecosystem_users');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
     
     return [
       { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', role: 'admin', joinedAt: '2025-12-01', status: 'Active' },
@@ -113,9 +121,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const [registeredStartups, setRegisteredStartups] = useState<PublicStartup[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const saved = localStorage.getItem('velix_public_startups');
-    if (saved) return JSON.parse(saved);
+    try {
+      if (typeof window === 'undefined') return [];
+      const saved = localStorage.getItem('velix_public_startups');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
     return [];
   });
 
@@ -144,6 +154,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [registeredStartups]);
 
   const syncStartupToEcosystem = (startup: PublicStartup) => {
+    if (!startup || !startup.id) return;
     setRegisteredStartups(prev => {
       const exists = prev.find(p => p.id === startup.id);
       if (exists) {
@@ -154,11 +165,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const addEcosystemUser = (name: string, email: string, role: 'startup' | 'talent' = 'startup') => {
+    if (!email) return;
     setEcosystemUsers(prev => {
-      if (prev.some(u => u.email.toLowerCase() === email.toLowerCase())) return prev;
+      if (prev.some(u => u.email?.toLowerCase() === email.toLowerCase())) return prev;
       const newUser: EcosystemUser = {
         id: Math.random().toString(36).substr(2, 9),
-        name,
+        name: name || 'Unnamed Node',
         email,
         role,
         joinedAt: new Date().toISOString().split('T')[0],
@@ -268,6 +280,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const suspiciousDomains = ['tempmail.com', 'mailinator.com', '10minutemail.com', 'sharklasers.com', 'guerrillamail.com'];
     const initialCount = ecosystemUsers.length;
     const cleanedUsers = ecosystemUsers.filter(user => {
+      if (!user.email) return false;
       const emailParts = user.email.split('@');
       const emailDomain = emailParts[1] || '';
       const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);

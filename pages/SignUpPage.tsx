@@ -17,12 +17,12 @@ const SignUpPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && password) {
-      // 1. Registrar no diretório interno de usuários
+      // 1. Registrar no diretório interno de usuários (Ecosystem)
       addEcosystemUser(name, email);
       
       // 2. Sincronizar IMEDIATAMENTE com o ecossistema público (Landing Page)
       syncStartupToEcosystem({
-        id: email,
+        id: email.toLowerCase(),
         name: name,
         logo: `https://via.placeholder.com/100?text=${name[0].toUpperCase()}`,
         slogan: 'Initializing mission parameters...',
@@ -30,8 +30,8 @@ const SignUpPage: React.FC = () => {
         updatedAt: new Date().toISOString()
       });
 
-      // 3. Autenticar
-      login(email);
+      // 3. Autenticar e Criar Registro Global (Persistence)
+      login(email, 'startup', name);
       
       // 4. Redirecionar
       const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
