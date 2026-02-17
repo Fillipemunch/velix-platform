@@ -76,16 +76,18 @@ const BrandProfile: React.FC = () => {
     updateStartupProfile(profileData);
     
     // 2. Sincronizar com o ecossistema público (Landing Page)
-    // Garantimos que a imagem mais recente do contexto seja usada aqui
     if (user?.email) {
       syncStartupToEcosystem({
         id: user.email.toLowerCase(),
         name: formData.name || user.name || 'Startup',
         logo: user.profileImage || `https://via.placeholder.com/200?text=${(formData.name || 'S')[0]}`,
         slogan: formData.slogan || '',
-        industry: formData.industry || 'Tech',
+        industry: t.brand.industries[formData.industry] || formData.industry,
         about: formData.about || '',
         website: formData.website || '',
+        location: t.regions[formData.location] || formData.location,
+        teamSize: formData.teamSize || '',
+        selectedValues: formData.selectedValues || [],
         updatedAt: new Date().toISOString()
       });
     }

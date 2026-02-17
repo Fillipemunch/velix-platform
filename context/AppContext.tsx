@@ -36,6 +36,9 @@ export interface PublicStartup {
   industry: string;
   about?: string;
   website?: string;
+  location?: string;
+  teamSize?: string;
+  selectedValues?: string[];
   updatedAt: string;
 }
 
@@ -120,7 +123,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const saved = localStorage.getItem('velix_ecosystem_users');
       const parsed = saved ? JSON.parse(saved) : null;
       if (Array.isArray(parsed)) {
-        // Garantir que empresas como Gronsti não persistam no diretório de usuários
         return parsed.filter(u => u.name?.toLowerCase() !== 'grønsti');
       }
     } catch (e) {}
@@ -133,7 +135,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const saved = localStorage.getItem('velix_public_startups');
       const parsed = saved ? JSON.parse(saved) : null;
       if (Array.isArray(parsed)) {
-        // FILTRO CRÍTICO: Remove GrønSti ou qualquer startup que não tenha sido criada manualmente agora
         return parsed.filter(s => s.name?.toLowerCase() !== 'grønsti');
       }
     } catch (e) {}
