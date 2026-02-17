@@ -25,7 +25,7 @@ const AdminDashboard: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const MASTER_ADMIN_EMAIL = 'fillipeferreiramunch@gmail.com';
-  const IS_AUTHORIZED = user?.email.toLowerCase() === MASTER_ADMIN_EMAIL;
+  const IS_AUTHORIZED = user?.email?.toLowerCase() === MASTER_ADMIN_EMAIL;
 
   useEffect(() => {
     if (!isAdmin || !IS_AUTHORIZED) {
@@ -234,7 +234,7 @@ const AdminDashboard: React.FC = () => {
                     <div className="bg-slate-50 p-8 md:p-12 rounded-[2.5rem] border border-slate-100 text-center flex flex-col items-center">
                        <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-8 text-[#D6825C] shadow-xl">{isCleaning ? <Zap size={40} className="animate-pulse" /> : <Ghost size={40} />}</div>
                        <h4 className="text-2xl md:text-3xl font-black text-[#1a2e26] uppercase mb-6 tracking-tighter">Protocol Scan</h4>
-                       <p className="text-[#1a2e26]/50 font-medium max-w-sm mx-auto mb-10 text-sm md:text-lg leading-relaxed">Instantly identify and remove bot patterns and temporary nodes.</p>
+                       <p className="text-[#1a2e26]/50 font-medium max-sm:mx-auto mb-10 text-sm md:text-lg leading-relaxed">Instantly identify and remove bot patterns and temporary nodes.</p>
                        <button onClick={handleCleanup} disabled={isCleaning} className={`w-full sm:w-auto px-12 py-5 bg-[#1a2e26] text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-2xl active:scale-95 transition-all flex items-center justify-center space-x-3 ${isCleaning ? 'opacity-50' : 'hover:bg-[#D6825C]'}`}>
                          {isCleaning ? <><Database className="animate-spin" size={16} /> <span>Cleaning...</span></> : <><Zap size={16} fill="currentColor" /> <span>Start Cleanup</span></>}
                        </button>

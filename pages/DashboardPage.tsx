@@ -36,7 +36,7 @@ const DashboardPage: React.FC = () => {
   const selectedJob = userCreatedJobs.find(j => j.id === selectedJobId);
   const jobApplicants = applications.filter(app => app.jobId === selectedJobId);
 
-  const isMasterAdmin = user?.email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
+  const isMasterAdmin = user?.email?.toLowerCase() === 'fillipeferreiramunch@gmail.com';
   // Precise absolute path for the master architect image
   const founderImageUrl = "/IMG_6411%20Lille.png";
 

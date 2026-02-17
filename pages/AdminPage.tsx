@@ -24,7 +24,7 @@ const AdminPage: React.FC = () => {
 
   // MASTER SECURITY LOCK
   const MASTER_ADMIN_EMAIL = 'fillipeferreiramunch@gmail.com';
-  const IS_AUTHORIZED = user?.email.toLowerCase() === MASTER_ADMIN_EMAIL;
+  const IS_AUTHORIZED = user?.email?.toLowerCase() === MASTER_ADMIN_EMAIL;
   // Encoded URL path for public folder asset
   const founderImageUrl = "/IMG_6411%20Lille.png";
 
@@ -48,12 +48,16 @@ const AdminPage: React.FC = () => {
     );
   }
 
-  // REAL DATA LOGS
+  // REAL DATA LOGS with safe timestamp fallback
   const unifiedLogs = [
     ...ecosystemUsers.map(u => ({ type: 'NODE', name: u.name, time: u.joinedAt, label: 'Access Auth' })),
     ...allJobs.map(j => ({ type: 'CORP', name: j.title, time: j.postedAt, label: 'Market Signal' })),
-    ...investors.map(i => ({ type: 'CAPITAL', name: i.name, time: 'Recent', label: 'Capital Registration' }))
-  ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
+    ...investors.map(i => ({ type: 'CAPITAL', name: i.name, time: '2026-01-01', label: 'Capital Registration' }))
+  ].sort((a, b) => {
+    const timeA = isNaN(new Date(a.time).getTime()) ? 0 : new Date(a.time).getTime();
+    const timeB = isNaN(new Date(b.time).getTime()) ? 0 : new Date(b.time).getTime();
+    return timeB - timeA;
+  }).slice(0, 10);
 
   const stats = [
     { label: 'Ecosystem Talents', value: ecosystemUsers.length, icon: <Users size={24} />, color: 'text-blue-500' },
