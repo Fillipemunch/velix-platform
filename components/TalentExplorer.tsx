@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp, EcosystemUser } from '../context/AppContext';
-// Added Check to the lucide-react imports
+import { useAuth } from '../context/AuthContext';
 import { Search, MapPin, Briefcase, Filter, Lock, Send, Sparkles, Star, User, Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Job } from '../types';
@@ -12,6 +12,7 @@ interface TalentExplorerProps {
 
 const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs }) => {
   const { t, ecosystemUsers } = useApp();
+  const { user: currentUser } = useAuth();
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     category: 'All',
@@ -21,13 +22,20 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
   const [invitingId, setInvitingId] = useState<string | null>(null);
   const [invitedTalents, setInvitedTalents] = useState<string[]>([]);
 
-  // EXCLUSIVE: Filter out the Master Admin (fillipeferreiramunch@gmail.com) from the talent list
+  // CRITICAL FIX: 
+  // 1. Filter out the current logged in user (Startup shouldn't hire itself)
+  // 2. Filter out users registered as 'startup' (Startups shouldn't appear as candidates)
+  // 3. Filter out the master admin
   const talents = ecosystemUsers
-    .filter(user => user.email.toLowerCase() !== 'fillipeferreiramunch@gmail.com')
+    .filter(u => 
+      u.email.toLowerCase() !== 'fillipeferreiramunch@gmail.com' && 
+      u.email.toLowerCase() !== currentUser?.email.toLowerCase() &&
+      u.role === 'talent'
+    )
     .map(user => ({
       id: user.id,
       name: user.name,
-      role: 'Integrated Node', // Default role for newly registered users
+      role: 'Integrated Node', 
       experience: 'Expert' as const,
       category: 'Tech' as const,
       location: 'Copenhagen Hub',
@@ -53,8 +61,6 @@ const TalentExplorer: React.FC<TalentExplorerProps> = ({ isPremium, startupJobs 
     setInvitedTalents(prev => [...prev, talentId]);
     setInvitingId(null);
   };
-
-  const locations = Array.from(new Set(talents.map(t => t.location))).concat(['All']).sort();
 
   return (
     <div className="space-y-8">

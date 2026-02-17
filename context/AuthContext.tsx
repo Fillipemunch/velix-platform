@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 interface User {
   email: string;
   name: string;
+  role: 'startup' | 'talent' | 'admin';
   isSubscribed?: boolean;
   isAdmin?: boolean;
   profileImage?: string;
@@ -10,7 +11,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string) => void;
+  login: (email: string, role?: 'startup' | 'talent') => void;
   logout: () => void;
   subscribe: () => void;
   updateProfileImage: (image: string) => void;
@@ -31,12 +32,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   }, []);
 
-  const login = (email: string) => {
+  const login = (email: string, role: 'startup' | 'talent' = 'startup') => {
     const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
     
     const userData: User = { 
       email, 
       name: email.split('@')[0], 
+      role: isAdmin ? 'admin' : role,
       isSubscribed: false,
       isAdmin,
       profileImage: isAdmin ? "/IMG_6411%20Lille.png" : undefined

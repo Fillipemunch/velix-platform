@@ -1,4 +1,3 @@
-// Fixed malformed import: added missing opening brace for named imports
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Language, FilterState, Investor, Job } from '../types';
 import { translations } from '../translations';
@@ -23,6 +22,7 @@ export interface EcosystemUser {
   id: string;
   name: string;
   email: string;
+  role: 'startup' | 'talent' | 'admin';
   joinedAt: string;
   status: 'Active' | 'Banned';
   isSuspicious?: boolean;
@@ -50,7 +50,7 @@ interface AppContextType {
   moderateInvestor: (investorId: string, status: 'Approved' | 'Rejected') => void;
   getCheckoutPrice: (cvr: string) => { amount: number; currency: string };
   ecosystemUsers: EcosystemUser[];
-  addEcosystemUser: (name: string, email: string) => void;
+  addEcosystemUser: (name: string, email: string, role?: 'startup' | 'talent') => void;
   banUser: (id: string) => void;
   runFakeCleanup: () => { removedCount: number };
   nukeDatabase: () => void;
@@ -95,7 +95,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (saved) return JSON.parse(saved);
     
     return [
-      { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', joinedAt: '2025-12-01', status: 'Active' },
+      { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', role: 'admin', joinedAt: '2025-12-01', status: 'Active' },
     ];
   });
 
@@ -119,13 +119,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     localStorage.setItem('velix_ecosystem_users', JSON.stringify(ecosystemUsers));
   }, [ecosystemUsers]);
 
-  const addEcosystemUser = (name: string, email: string) => {
+  const addEcosystemUser = (name: string, email: string, role: 'startup' | 'talent' = 'startup') => {
     setEcosystemUsers(prev => {
       if (prev.some(u => u.email.toLowerCase() === email.toLowerCase())) return prev;
       const newUser: EcosystemUser = {
         id: Math.random().toString(36).substr(2, 9),
         name,
         email,
+        role,
         joinedAt: new Date().toISOString().split('T')[0],
         status: 'Active'
       };
@@ -145,7 +146,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const getCheckoutPrice = (cvr: string) => {
-    // Logic updated to return 0 for subsidized model
     return { amount: 0, currency: 'eur' };
   };
 
@@ -230,22 +230,16 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const runFakeCleanup = () => {
     const suspiciousDomains = ['tempmail.com', 'mailinator.com', '10minutemail.com', 'sharklasers.com', 'guerrillamail.com'];
-    
     const initialCount = ecosystemUsers.length;
     const cleanedUsers = ecosystemUsers.filter(user => {
       const emailParts = user.email.split('@');
       const emailDomain = emailParts[1] || '';
       const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);
-      
-      // Fixed circular reference: localPart was using its own length before definition
       const localPart = emailParts[0] || '';
       const hasRandomPattern = /\d{5,}/.test(localPart);
-      
       if (user.email === 'fillipeferreiramunch@gmail.com') return true;
-      
       return !isSuspiciousDomain && !hasRandomPattern;
     });
-
     setEcosystemUsers(cleanedUsers);
     return { removedCount: initialCount - cleanedUsers.length };
   };
