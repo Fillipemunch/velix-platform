@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp, PublicStartup } from '../context/AppContext';
-import { Search, MapPin, ArrowRight, Zap, TrendingUp, Cpu, Globe, Shield, Building2 } from 'lucide-react';
+import { Search, MapPin, ArrowRight, Zap, TrendingUp, Cpu, Globe, Shield, Building2, LayoutGrid } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import StartupProfileModal from '../components/StartupProfileModal';
 
@@ -20,10 +20,10 @@ const LandingPage: React.FC = () => {
   const { t, setFilters, language, investors, registeredStartups } = appContext;
   const featuredInvestors = investors.slice(0, 3);
 
-  // Ordenar para mostrar os mais recentemente atualizados primeiro
-  const partners = [...registeredStartups].sort((a, b) => 
+  // Filtramos apenas as startups que possuem ID (foram cadastradas)
+  const activeEcosystem = [...registeredStartups].sort((a, b) => 
     new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  ).slice(0, 12);
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,43 +108,60 @@ const LandingPage: React.FC = () => {
         </motion.form>
       </section>
 
-      {/* Dynamic Ecosystem Partners Section */}
-      {partners.length > 0 && (
-        <section className="py-24 bg-white border-y border-slate-50">
-          <div className="max-w-7xl mx-auto px-6">
-            <div className="flex items-center space-x-10 mb-16">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1a2e26]/20 whitespace-nowrap">Integrated Partners</h2>
-              <div className="h-px bg-[#1a2e26]/5 flex-1"></div>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-              {partners.map((partner, idx) => (
-                <motion.div 
-                  key={partner.id} 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: idx * 0.1 }}
-                  onClick={() => setSelectedStartup(partner)}
-                  className="flex flex-col items-center group cursor-pointer"
-                >
-                  <div className="w-24 h-24 bg-[#F9FBF9] rounded-[2rem] border border-[#1a2e26]/5 flex items-center justify-center mb-4 group-hover:shadow-xl group-hover:border-[#D6825C]/40 transition-all overflow-hidden relative active:scale-95">
-                    <img 
-                      src={partner.logo} 
-                      alt={partner.name} 
-                      className="w-full h-full object-cover p-2 group-hover:scale-110 transition-transform" 
-                    />
-                  </div>
-                  <p className="text-[9px] font-black text-[#1a2e26]/40 uppercase tracking-widest group-hover:text-[#D6825C] transition-colors text-center">{partner.name}</p>
-                </motion.div>
-              ))}
-            </div>
+      {/* Seção de Ecossistema Ativo - Apenas Empresas Cadastradas */}
+      <section className="py-24 bg-white border-y border-slate-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center space-x-10 mb-16">
+            <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#1a2e26]/20 whitespace-nowrap">Live Ecosystem</h2>
+            <div className="h-px bg-[#1a2e26]/5 flex-1"></div>
+            {activeEcosystem.length === 0 && (
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#D6825C]/40">Scanning for new nodes...</p>
+            )}
           </div>
-        </section>
-      )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {activeEcosystem.map((startup, idx) => (
+              <motion.div 
+                key={startup.id} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                onClick={() => setSelectedStartup(startup)}
+                className="bg-[#F9FBF9] p-8 rounded-[2.5rem] border border-[#1a2e26]/5 hover:border-[#D6825C]/30 hover:shadow-2xl transition-all cursor-pointer group flex items-center space-x-6"
+              >
+                <div className="w-20 h-20 bg-white rounded-3xl border border-[#1a2e26]/5 flex items-center justify-center flex-shrink-0 shadow-inner overflow-hidden group-hover:scale-105 transition-transform">
+                  <img src={startup.logo} alt={startup.name} className="w-full h-full object-cover" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-xl font-black text-[#1a2e26] truncate group-hover:text-[#D6825C] transition-colors uppercase tracking-tight">{startup.name}</h3>
+                  <p className="text-xs text-[#1a2e26]/40 font-bold line-clamp-2 mt-1 italic">
+                    {startup.slogan !== "Initializing mission parameters..." ? startup.slogan : "Active Member"}
+                  </p>
+                  <div className="mt-3 flex items-center text-[9px] font-black text-[#D6825C] uppercase tracking-widest">
+                    <span>View Profile</span>
+                    <ArrowRight size={10} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+
+            {activeEcosystem.length === 0 && (
+              <div className="lg:col-span-3 py-20 text-center border-2 border-dashed border-[#1a2e26]/5 rounded-[3rem]">
+                <LayoutGrid size={48} className="mx-auto text-[#1a2e26]/5 mb-6" />
+                <p className="text-[#1a2e26]/30 font-bold uppercase tracking-widest text-sm">No entities registered in the current epoch.</p>
+                <Link to="/signup" className="mt-6 inline-block text-[#D6825C] font-black uppercase tracking-[0.2em] text-[10px] hover:underline">
+                  Initialize First Node →
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
 
       <StartupProfileModal startup={selectedStartup} onClose={() => setSelectedStartup(null)} />
 
+      {/* Seção de Capital */}
       <section className="py-32 bg-[#1a2e26] text-white relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 relative z-10 text-center">
           <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
