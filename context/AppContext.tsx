@@ -72,6 +72,8 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const MASTER_ADMIN_EMAIL = 'fillipeferreiramunch@gmail.com';
+
   const [language, setLanguage] = useState<Language>(() => {
     if (typeof window === 'undefined') return 'en';
     const savedLang = localStorage.getItem('velix_lang');
@@ -112,7 +114,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   });
 
   const [ecosystemUsers, setEcosystemUsers] = useState<EcosystemUser[]>(() => {
-    const defaultAdmin: EcosystemUser = { id: 'master-admin', name: 'Fillipe Munch', email: 'fillipeferreiramunch@gmail.com', role: 'admin', joinedAt: '2025-12-01', status: 'Active' };
+    const defaultAdmin: EcosystemUser = { id: 'master-admin', name: 'Fillipe Munch', email: MASTER_ADMIN_EMAIL, role: 'admin', joinedAt: '2025-12-01', status: 'Active' };
     try {
       if (typeof window === 'undefined') return [defaultAdmin];
       const saved = localStorage.getItem('velix_ecosystem_users');
@@ -159,7 +161,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const syncStartupToEcosystem = (startup: PublicStartup) => {
     if (!startup || !startup.id) return;
     setRegisteredStartups(prev => {
-      // Segurança adicional: se por algum motivo prev não for array, reinicia como array
       const currentList = Array.isArray(prev) ? prev : [];
       const exists = currentList.find(p => p.id === startup.id);
       if (exists) {
@@ -187,16 +188,41 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const nukeDatabase = () => {
-    const masterAdmin = ecosystemUsers.find(u => u.email === 'fillipeferreiramunch@gmail.com');
-    setEcosystemUsers(masterAdmin ? [masterAdmin] : []);
+    // 1. Identificar o Admin Master para preservação
+    const masterAdmin = ecosystemUsers.find(u => u.email?.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase());
+    
+    // 2. Limpar os estados locais (UI)
     setAllJobs([]);
     setInvestors([]);
     setApplications([]);
     setRegisteredStartups([]);
+    setEcosystemUsers(masterAdmin ? [masterAdmin] : []);
+
+    // 3. Limpar chaves de visualização e registros parciais
     localStorage.removeItem('velix_all_jobs');
     localStorage.removeItem('velix_investors');
     localStorage.removeItem('velix_applications');
     localStorage.removeItem('velix_public_startups');
+    localStorage.removeItem('velix_ecosystem_users');
+
+    // 4. Limpeza Profunda: Registro Global de Autenticação (Banco de dados de usuários)
+    // Mantemos apenas o admin no registro de logins
+    const globalRegistryRaw = localStorage.getItem('velix_global_registry');
+    if (globalRegistryRaw) {
+      try {
+        const registry = JSON.parse(globalRegistryRaw);
+        const newRegistry = {};
+        if (registry[MASTER_ADMIN_EMAIL.toLowerCase()]) {
+          newRegistry[MASTER_ADMIN_EMAIL.toLowerCase()] = registry[MASTER_ADMIN_EMAIL.toLowerCase()];
+        }
+        localStorage.setItem('velix_global_registry', JSON.stringify(newRegistry));
+      } catch (e) {
+        localStorage.removeItem('velix_global_registry');
+      }
+    }
+
+    // Opcional: Manter a sessão do admin ativa se ele for o executor
+    console.log("Protocol Reset Successful • All non-admin nodes cleared.");
   };
 
   const getCheckoutPrice = (cvr: string) => {
@@ -293,7 +319,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);
       const localPart = emailParts[0] || '';
       const hasRandomPattern = /\d{5,}/.test(localPart);
-      if (user.email === 'fillipeferreiramunch@gmail.com') return true;
+      if (user.email.toLowerCase() === MASTER_ADMIN_EMAIL.toLowerCase()) return true;
       return !isSuspiciousDomain && !hasRandomPattern;
     });
     setEcosystemUsers(cleanedUsers);
