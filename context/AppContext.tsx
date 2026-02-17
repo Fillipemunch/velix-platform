@@ -116,8 +116,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('velix_public_startups');
     if (saved) return JSON.parse(saved);
-    
-    // START WITH EMPTY REAL ECOSYSTEM
     return [];
   });
 
@@ -273,7 +271,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       const emailParts = user.email.split('@');
       const emailDomain = emailParts[1] || '';
       const isSuspiciousDomain = suspiciousDomains.includes(emailDomain);
-      // Fix: Corrected LocalPart to localPart and used index 0 for splitting email
       const localPart = emailParts[0] || '';
       const hasRandomPattern = /\d{5,}/.test(localPart);
       if (user.email === 'fillipeferreiramunch@gmail.com') return true;
@@ -282,9 +279,6 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     setEcosystemUsers(cleanedUsers);
     return { removedCount: initialCount - cleanedUsers.length };
   };
-
-  const userCreatedJobs = allJobs; 
-  const totalUserPosts = allJobs.length + investors.length;
 
   const t = translations[language] || translations['en'];
 
@@ -303,10 +297,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       addInvestor,
       deleteInvestor,
       allJobs,
-      userCreatedJobs,
+      userCreatedJobs: allJobs,
       addUserJob,
       deleteJob,
-      totalUserPosts,
+      totalUserPosts: allJobs.length + investors.length,
       moderateJob,
       moderateInvestor,
       getCheckoutPrice,
@@ -326,35 +320,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {
-    return {
-      language: 'en',
-      t: translations['en'],
-      setLanguage: () => {},
-      filters: { searchQuery: '', region: [], type: [] },
-      setFilters: () => {},
-      applications: [],
-      addApplication: () => {},
-      markApplicationsAsRead: () => {},
-      updateApplicationStatus: () => {},
-      investors: [],
-      addInvestor: () => {},
-      deleteInvestor: () => {},
-      allJobs: [],
-      userCreatedJobs: [],
-      addUserJob: () => {},
-      deleteJob: () => {},
-      totalUserPosts: 0,
-      moderateJob: () => {},
-      moderateInvestor: () => {},
-      getCheckoutPrice: () => ({ amount: 0, currency: 'eur' }),
-      ecosystemUsers: [],
-      addEcosystemUser: () => {},
-      banUser: () => {},
-      runFakeCleanup: () => ({ removedCount: 0 }),
-      nukeDatabase: () => {},
-      registeredStartups: [],
-      syncStartupToEcosystem: () => {}
-    } as any;
+    throw new Error('useApp must be used within an AppProvider');
   }
   return context;
 };

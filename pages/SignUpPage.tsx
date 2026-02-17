@@ -7,7 +7,7 @@ import { Mail, Lock, ArrowLeft, User } from 'lucide-react';
 import Logo from '../components/Logo';
 
 const SignUpPage: React.FC = () => {
-  const { t, addEcosystemUser } = useApp();
+  const { t, addEcosystemUser, syncStartupToEcosystem } = useApp();
   const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -17,11 +17,23 @@ const SignUpPage: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email && password) {
-      // Register the user in the ecosystem registry
+      // 1. Registrar no diretório interno de usuários
       addEcosystemUser(name, email);
-      // Authenticate
+      
+      // 2. Sincronizar IMEDIATAMENTE com o ecossistema público (Landing Page)
+      syncStartupToEcosystem({
+        id: email,
+        name: name,
+        logo: `https://via.placeholder.com/100?text=${name[0].toUpperCase()}`,
+        slogan: 'Initializing mission parameters...',
+        industry: 'Tech Ecosystem',
+        updatedAt: new Date().toISOString()
+      });
+
+      // 3. Autenticar
       login(email);
-      // EXCLUSIVE REDIRECT: Master Admin goes to Master Hub, others to Dashboard
+      
+      // 4. Redirecionar
       const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
       navigate(isAdmin ? '/admin/master' : '/dashboard');
     }
@@ -34,7 +46,6 @@ const SignUpPage: React.FC = () => {
       exit={{ opacity: 0 }}
       className="min-h-screen bg-[#F4F7F5] flex flex-col items-center justify-center p-4"
     >
-      {/* Back Button */}
       <div className="absolute top-8 left-8">
         <button 
           onClick={() => navigate('/')}
@@ -60,7 +71,7 @@ const SignUpPage: React.FC = () => {
                 type="text" 
                 required 
                 className="w-full pl-12 pr-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-[#2D5A4C] focus:bg-white outline-none transition-all font-semibold"
-                placeholder="John Doe"
+                placeholder="Startup or Talent Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
