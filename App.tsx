@@ -8,6 +8,7 @@ import JobBoard from './pages/JobBoard';
 import JobDetails from './pages/JobDetails';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
+import ForStartupsPage from './pages/ForStartupsPage';
 import DashboardPage from './pages/DashboardPage';
 import PhilosophyPage from './pages/AboutPage';
 import PricingPage from './pages/PricingPage';
@@ -73,6 +74,7 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="/jobs" element={<JobBoard />} />
         <Route path="/jobs/:id" element={<JobDetails />} />
+        <Route path="/for-startups" element={<ForStartupsPage />} />
         <Route path="/philosophy" element={<PhilosophyPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/success" element={<SuccessPage />} />

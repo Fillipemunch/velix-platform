@@ -13,6 +13,7 @@ interface StartupProfile {
 interface User {
   email: string;
   name: string;
+  password?: string;
   role: 'startup' | 'talent' | 'admin';
   isSubscribed?: boolean;
   isAdmin?: boolean;
@@ -22,8 +23,8 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string) => boolean;
-  register: (name: string, email: string, role?: 'startup' | 'talent') => void;
+  login: (email: string, password?: string) => boolean;
+  register: (name: string, email: string, password?: string, role?: 'startup' | 'talent') => void;
   logout: () => void;
   subscribe: () => void;
   updateProfileImage: (image: string) => void;
@@ -67,13 +68,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('velix_global_registry', JSON.stringify(registry));
   };
 
-  const register = (name: string, email: string, role: 'startup' | 'talent' = 'startup') => {
+  const register = (name: string, email: string, password?: string, role: 'startup' | 'talent' = 'startup') => {
     const cleanEmail = email.toLowerCase();
     const isAdmin = cleanEmail === 'fillipeferreiramunch@gmail.com';
     
     const newUser: User = { 
       email: cleanEmail, 
       name: name, 
+      password: password,
       role: isAdmin ? 'admin' : role,
       isSubscribed: false,
       isAdmin,
@@ -97,12 +99,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     localStorage.setItem('velix_user', JSON.stringify(newUser));
   };
 
-  const login = (email: string): boolean => {
+  const login = (email: string, password?: string): boolean => {
     const cleanEmail = email.toLowerCase();
     const registry = getGlobalRegistry();
     const existingUser = registry[cleanEmail];
 
     if (existingUser) {
+      // Se o usuário tem senha registrada, verifica se coincide
+      if (existingUser.password && existingUser.password !== password) {
+        return false;
+      }
+      
       setUser(existingUser);
       localStorage.setItem('velix_user', JSON.stringify(existingUser));
       return true;

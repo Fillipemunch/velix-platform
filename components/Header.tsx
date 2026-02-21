@@ -37,6 +37,9 @@ const Header: React.FC = () => {
           <Link to="/jobs" className={`text-sm font-bold transition-all ${isActive('/jobs') ? 'text-[#D6825C]' : 'text-white/80 hover:text-white'}`}>
             {t.navigation.findJobs}
           </Link>
+          <Link to="/for-startups" className={`text-sm font-bold transition-all ${isActive('/for-startups') ? 'text-[#D6825C]' : 'text-white/80 hover:text-white'}`}>
+            {t.navigation.forStartups}
+          </Link>
           <Link to="/funding" className={`text-sm font-bold transition-all ${isActive('/funding') ? 'text-[#D6825C]' : 'text-white/80 hover:text-white'}`}>
             {t.navigation.tab_funding}
           </Link>
@@ -114,6 +117,7 @@ const Header: React.FC = () => {
             className="md:hidden absolute top-full left-0 right-0 bg-[#1a2e26] border-b border-white/5 p-8 flex flex-col space-y-6 shadow-2xl"
           >
             <Link to="/jobs" onClick={() => setIsOpen(false)} className="text-xl font-bold text-white">{t.navigation.findJobs}</Link>
+            <Link to="/for-startups" onClick={() => setIsOpen(false)} className="text-xl font-bold text-white">{t.navigation.forStartups}</Link>
             <Link to="/funding" onClick={() => setIsOpen(false)} className="text-xl font-bold text-white">{t.navigation.tab_funding}</Link>
             <Link to="/investor-onboarding" onClick={() => setIsOpen(false)} className="text-xl font-bold text-[#D6825C]">{t.navigation.joinAsInvestor}</Link>
             

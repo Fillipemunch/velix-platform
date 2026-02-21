@@ -20,13 +20,13 @@ const LoginPage: React.FC = () => {
     setError(null);
 
     if (email && password) {
-      const success = login(email);
+      const success = login(email, password);
       
       if (success) {
         const isAdmin = email.toLowerCase() === 'fillipeferreiramunch@gmail.com';
         navigate(isAdmin ? '/admin/master' : '/dashboard');
       } else {
-        setError("Account not found. Please register your entity first.");
+        setError("Invalid credentials or account not found. Please register your entity first.");
       }
     }
   };

@@ -18,7 +18,7 @@ const SignUpPage: React.FC = () => {
     e.preventDefault();
     if (email && name && password) {
       // 1. Criar registro oficial no AuthContext (Banco de dados Global)
-      register(name, email, 'startup');
+      register(name, email, password, 'startup');
 
       // 2. Registrar no diretório interno de visualização (Ecosystem)
       addEcosystemUser(name, email);

@@ -84,7 +84,6 @@ const JobDetails: React.FC = () => {
                 <p className="text-[10px] font-black text-[#1A2E26]/30 uppercase tracking-[0.2em]">{t.common.type}</p>
                 <div className="flex items-center text-[#1A2E26] font-bold text-lg">
                   <Briefcase size={20} className="mr-3 text-[#1A2E26]/40" />
-                  {/* @ts-ignore */}
                   {t.jobTypes?.[job.type] || job.type}
                 </div>
               </div>
